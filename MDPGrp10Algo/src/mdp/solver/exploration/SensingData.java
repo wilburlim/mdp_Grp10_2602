@@ -8,6 +8,6 @@ public class SensingData {
 
     public int left = 0;
     public int right_f = 0;
-    public int left_m = 0;
+    public int right_m = 0;
 
 }

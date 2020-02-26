@@ -7,5 +7,6 @@ public enum GUIClickEvent {
     OnRestart,OnTestWayPoint,
     OnToggleSim, OnConnectBtn,
     OnStartTimer, OnStopTimer,
-    OnToggleRound, OnSetWayPoint,OnShortestPathWP,
+    OnToggleRound, OnSetWayPoint,OnShortestPathWP, OnReset, OnStop,
+    OnResetTimer,
 }

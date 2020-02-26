@@ -70,6 +70,7 @@ public class Robot {
         switch (action) {
             case MoveForward:
                 // RPI call
+
                 _position.add(dirVector);
                 break;
             case MoveBackward:
@@ -85,7 +86,6 @@ public class Robot {
             case RotateRight:
                 // RPI call
                 _orientation = _orientation.getRight();
-                System.out.println(_orientation);
                 break;
                 
             

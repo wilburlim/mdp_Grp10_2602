@@ -76,6 +76,10 @@ public class Main {
                     System.out.println("Triggering Exploration");
                     _gui.trigger(GUIClickEvent.OnExploration);
                     break;
+                case "g":
+                    System.out.println("Triggering Stop Button");
+                    _gui.trigger(GUIClickEvent.OnStop);
+                    break;
                 case "s":
                     System.out.println("Triggering ShortestPath");
                     _gui.trigger(GUIClickEvent.OnShortestPath);

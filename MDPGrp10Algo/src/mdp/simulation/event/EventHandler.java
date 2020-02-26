@@ -36,6 +36,7 @@ import mdp.solver.shortestpath.AStarSolverResult;
 import mdp.solver.shortestpath.AStarUtil;
 import mdp.solver.shortestpath.SolveType;
 import mdp.communication.Compiler;
+import mdp.communication.SocketCommunicator;
 
 public class EventHandler implements IHandleable {
 
@@ -114,18 +115,18 @@ public class EventHandler implements IHandleable {
                 .getMainPanel()
                 .getIntrCtrlPanel()
                 .getTermRoundCheckbox().addMouseListener(_wrapMouseAdapter(GUIClickEvent.OnToggleRound));
-//        _gui.getMainFrame()
-//                .getMainPanel()
-//                .getIntrCtrlPanel()
-//                .getResetBtn().addMouseListener(_onReset());
-//        _gui.getMainFrame()
-//                .getMainPanel()
-//                .getIntrCtrlPanel()
-//                .getStopBtn().addMouseListener(_onStop());
-//        _gui.getMainFrame()
-//                .getMainPanel()
-//                .getIntrCtrlPanel()
-//                .getRestartBtn().addMouseListener(_wrapMouseAdapter(GUIClickEvent.OnRestart));
+        _gui.getMainFrame()
+                .getMainPanel()
+                .getIntrCtrlPanel()
+                .getResetBtn().addMouseListener(_onReset());
+        _gui.getMainFrame()
+                .getMainPanel()
+                .getIntrCtrlPanel()
+                .getStopBtn().addMouseListener(_onStop());
+        _gui.getMainFrame()
+                .getMainPanel()
+                .getIntrCtrlPanel()
+                .getRestartBtn().addMouseListener(_wrapMouseAdapter(GUIClickEvent.OnRestart));
         // simulation/non-simulation control event
         _gui.getMainFrame()
                 .getMainPanel()
@@ -156,6 +157,8 @@ public class EventHandler implements IHandleable {
             case OnGetHex:
                 _onGetHex(e);
                 break;
+            case OnReset:
+            	_onReset();
 //            case OnCheckWeb:
 //                _onCheckWeb(e);
 //                break;
@@ -183,6 +186,9 @@ public class EventHandler implements IHandleable {
             case OnRestart:
                 _onRestart(e);
                 break;
+            case OnStop:
+                _onStop();
+                break;
             case OnToggleRound:
                 _onToggleRound(e);
                 break;
@@ -197,6 +203,9 @@ public class EventHandler implements IHandleable {
                 break;
             case OnStopTimer:
                 _onStopTimer();
+                break;
+            case OnResetTimer:
+                _onResetTimer();
                 break;
         }
     }
@@ -396,7 +405,6 @@ public class EventHandler implements IHandleable {
                     // shortest path
                     try {
                         _shortestPathProcedure(exePeriod);
-                        _gui.trigger(GUIClickEvent.OnStopTimer);
                     } catch (IOException e1) {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
@@ -420,8 +428,10 @@ public class EventHandler implements IHandleable {
                             .getMainPanel()
                             .getRunCtrlPanel()
                             .getExePeriod().getText()
+                    
             );
             _shortestPathProcedure2(exePeriod);
+            //_gui.trigger(GUIClickEvent.OnStopTimer); can't put it here as try will block
         } catch (IOException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
@@ -450,41 +460,56 @@ public class EventHandler implements IHandleable {
     
 
 
-//    private MouseAdapter _onStop() {
-//        return new MouseAdapter() {
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                if (_shortestPathThread != null) {
-//                    _shortestPathThread.cancel();
-//                }
-//                if (_explorationThread != null) {
-//                    _explorationThread.stop();
-//                }
-//                _gui.getMap().clearAllHighlight();
-//                _gui.update(_gui.getMap(), new Robot());
-//
-//                System.out.println("Stop completed.");
-//            }
-//        };
-//    }
-//
-//    private MouseAdapter _onReset() {
-//        return new MouseAdapter() {
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                if (_shortestPathThread != null) {
-//                    _shortestPathThread.cancel();
-//                }
-//                if (_explorationThread != null) {
-//                    _explorationThread.stop();
-//                }
-//                _gui.reset();
-//
-//                System.out.println("Reset completed.");
-//            }
-//        };
-//    }
-    private void _onRestart(MouseEvent e) {
+    private MouseAdapter _onStop() {
+        return new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (_shortestPathThread != null) {
+                    _shortestPathThread.cancel();
+                }
+                if (_explorationThread != null) {
+                    _explorationThread.stop();
+                }
+                _gui.getMap().clearAllHighlight();
+                _gui.update(_gui.getMap(), new Robot());
+                _gui.trigger(GUIClickEvent.OnStopTimer);
+                _gui.trigger(GUIClickEvent.OnResetTimer);
+                
+
+                System.out.println("Stop completed.");
+            }
+        };
+    }
+
+    private MouseAdapter _onReset() {
+        return new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (_shortestPathThread != null) {
+                    _shortestPathThread.cancel();
+                }
+                if (_explorationThread != null) {
+                    _explorationThread.stop();
+                }
+                _gui.reset();
+
+                
+                _gui.trigger(GUIClickEvent.OnStopTimer);
+                _gui.trigger(GUIClickEvent.OnResetTimer);
+                System.out.println("Reset completed.");     
+            }
+        };
+    }
+    
+    private void _onRestart(MouseEvent e) {   
+    	if (_shortestPathThread != null) {
+            _shortestPathThread.cancel();
+        }
+        if (_explorationThread != null) {
+            _explorationThread.stop();
+        }
+        _gui.reset();
+
         _gui.getMainFrame().dispose();
         Main.startGUI();
         _isShortestPath = true;
@@ -558,6 +583,13 @@ public class EventHandler implements IHandleable {
 
     private void _onStopTimer() {
         _timerThread.cancel();
+    }
+    
+    private void _onResetTimer() {
+    	_gui.getMainFrame()
+        	.getMainPanel()
+        	.getStatsCtrlPanel()
+        	.setTime("00:00");
     }
 
     // shared procedures
@@ -643,6 +675,7 @@ public class EventHandler implements IHandleable {
     private void _shortestPathProcedure(int exePeriod) throws IOException {
         System.out.println("Starting Shortest Path to waypoint");
         _isShortestPath = true;
+        _gui.trigger(GUIClickEvent.OnStartTimer);
         
         String waypoint = _gui
                 .getMainFrame()
@@ -710,6 +743,7 @@ public class EventHandler implements IHandleable {
                         _gui.update(_gui.getMap(), _gui.getRobot());
                     } else {
                         System.out.println("Path to waypoint completed.");
+                        _gui.trigger(GUIClickEvent.OnStopTimer);
                         this.cancel();
                     }
                 }
@@ -723,6 +757,7 @@ public class EventHandler implements IHandleable {
     private void _shortestPathProcedure2(int exePeriod) throws IOException {
         System.out.println("Starting Shortest Path from Start Pos, to WP, to goal position");
         _isShortestPath = true;
+        _gui.trigger(GUIClickEvent.OnStartTimer);
         
         String waypoint = _gui
                 .getMainFrame()
@@ -801,11 +836,13 @@ public class EventHandler implements IHandleable {
                         _gui.update(_gui.getMap(), _gui.getRobot());
                     } else {
                         System.out.println("Shortest path completed.");
+                        _gui.trigger(GUIClickEvent.OnStopTimer);
                         this.cancel();
                     }
                 }
             }, exePeriod, exePeriod);
         }	
+        
     }
     	
 

@@ -22,8 +22,8 @@ public class SocketCommunicator {
     private static final int _CONNECTION_TIMEOUT = 20;
     
     private SocketChannel _socketChannel;
-    ByteBuffer _inBuffer;
-    ByteBuffer _outBuffer;
+    public ByteBuffer _inBuffer;
+    public ByteBuffer _outBuffer;
     
     public SocketCommunicator(Runnable callback) {
         long startTime = System.currentTimeMillis();
@@ -70,5 +70,9 @@ public class SocketCommunicator {
     
     public void closeSocketChannel() throws IOException {
         _socketChannel.close();
+    }
+    
+    public ByteBuffer getOutBuffer() {
+        return _outBuffer;
     }
 }
