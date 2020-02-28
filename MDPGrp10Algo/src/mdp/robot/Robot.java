@@ -147,6 +147,7 @@ public class Robot {
                 //increment calibrationCounter
                 calibrationCounter += bufferedActions.size();
             }
+      
             int first = 0;
             int index =0;
             for (RobotAction action : bufferedActions) {

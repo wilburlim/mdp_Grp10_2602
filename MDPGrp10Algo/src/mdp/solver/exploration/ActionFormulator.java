@@ -633,6 +633,8 @@ public class ActionFormulator {
                 _robot.orientation());
         robotSimulator.execute(action);
 
+        System.out.println("predictAndSendCalibrationReminder");
+        
         if (mapViewer.checkLeftObstacles(robotSimulator)){
             if (Main.isSimulating())
                 System.out.println("Send calibration command " + CalibrationType.Left.toString());

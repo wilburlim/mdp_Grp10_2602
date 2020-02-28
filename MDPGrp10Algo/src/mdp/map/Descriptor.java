@@ -53,12 +53,15 @@ public class Descriptor {
     public static String[] toHex(String desc) {
         String[] result = new String[2];
         int resultIndex = 0;
+        System.out.println("toHex: "+desc);
         for (String curLine : desc.split("\n")) {
             if (curLine.equals("11")) {
                 if (result[0] != null && !result[0].isEmpty()) {
-                    resultIndex++;
+                    if(resultIndex<1)
+                	 resultIndex++;
                 }
-            } else {
+            } 
+            else {
                 if (result[resultIndex] == null) result[resultIndex] = "";
                 result[resultIndex] += curLine;
             }            

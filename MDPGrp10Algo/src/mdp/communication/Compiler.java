@@ -102,8 +102,8 @@ public class Compiler {
         return result;
     }
     
-    static List<String> compileAndroidActions(List<RobotAction> actions) {
-        List<String> result = new ArrayList<String>();
+    static String compileAndroidActions(List<RobotAction> actions) {
+        String result="";
         String lastAction = "";
         for (RobotAction action : actions) {
             String nextActionStr;
@@ -124,26 +124,26 @@ public class Compiler {
                     nextActionStr = " ";
                     break;
             }
-            if (result.size() != 0) {
+            if (result.length() != 0) {
                 if (lastAction.equals(nextActionStr)) {
                     boolean isRotating = lastAction.equals(_ROTATE_LEFT) || lastAction.equals(_ROTATE_RIGHT);
                     if (isRotating) {
-                        result.add(lastAction);
+                        result+=lastAction;
                     } else {
-                    	result.add(lastAction);
+                    	result+=lastAction;
                     }
                 } 
                 else {
                     boolean isRotating = lastAction.equals(_ROTATE_LEFT) || lastAction.equals(_ROTATE_RIGHT);
-                    result.add(nextActionStr);
+                    result+=nextActionStr;
                 }
             } else {
-                result.add(nextActionStr);
+                result+=nextActionStr;
             }
             lastAction = nextActionStr;
         }
         boolean isRotating;
-        if (result.size() != 1) {
+        if (result.length() != 1) {
             isRotating = lastAction.equals(_ROTATE_LEFT) || lastAction.equals(_ROTATE_RIGHT);
         } else {
             isRotating = result.equals(_ROTATE_LEFT) || result.equals(_ROTATE_RIGHT);

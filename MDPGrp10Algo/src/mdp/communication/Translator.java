@@ -97,6 +97,11 @@ public class Translator implements ITranslatable {
         try {
             String message = _TO_ANDROID_MARKER
                     + Compiler.compileMap(map, explored)
+                    +","
+                    + "\"robot\":"
+                    +"\""
+                    + Compiler.compileAndroidActions(actions)
+                    +"\""
                     +"}";
             
             _socketCommunicator.echo(message);
@@ -105,13 +110,13 @@ public class Translator implements ITranslatable {
             
 //            List<String> arrActions=Compiler.compileAndroidActions(actions);
             
-            String action = _TO_ANDROID_MARKER+ "{"
-            		+ "\"robot\":"
+//            String action = _TO_ANDROID_MARKER+ "{"
+//            		+ "\"robot\":"
 //                  + "\"" + "rffflfff"
-                  + Compiler.compileActions(actions,MODE_0)
-                  +"\""+ "}";
+//                  + Compiler.compileActions(actions,MODE_0)
+//                  +"\""+ "}";
             
-            _socketCommunicator.echo(action);
+//            _socketCommunicator.echo(action);
             
 //            List<String> aActions= new ArrayList<String>();
 //            aActions.add("f");
