@@ -5,7 +5,9 @@ import mdp.robot.Robot;
 import mdp.robot.RobotAction;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import mdp.Main;
 import mdp.common.Direction;
@@ -638,8 +640,12 @@ public class ActionFormulator {
         if (mapViewer.checkLeftObstacles(robotSimulator)){
             if (Main.isSimulating())
                 System.out.println("Send calibration command " + CalibrationType.Left.toString());
-            else
-                Main.getRpi().sendCalibrationCommand(CalibrationType.Left);
+            else {
+            	List<RobotAction> actions = new ArrayList<RobotAction>();
+            	actions.add(RobotAction.RotateLeft);
+            	Main.getRpi().sendMoveCommand(actions,"" );
+            	Main.getRpi().sendCalibrationCommand(CalibrationType.Left);
+            }
         }
         
         // only front back on the right side
@@ -648,6 +654,12 @@ public class ActionFormulator {
                    System.out.println("Send calibration command " + CalibrationType.Right.toString());
             else
                 Main.getRpi().sendCalibrationCommand(CalibrationType.Right);
+        }
+        if (mapViewer.checkFrontObstacles(robotSimulator)){
+            if (Main.isSimulating())
+                   System.out.println("Send calibration command " + CalibrationType.Front.toString());
+            else
+                Main.getRpi().sendCalibrationCommand(CalibrationType.Front);
         }
     }
 }

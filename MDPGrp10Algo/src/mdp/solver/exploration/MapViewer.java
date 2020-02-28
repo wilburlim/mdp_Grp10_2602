@@ -828,7 +828,31 @@ public class MapViewer  {
         return (m + f + b) == 3;
     }
 
-    
+    public boolean checkFrontObstacles(Robot _robot) {
+        // TODO Auto-generated method stub
+        Vector2 front_l, front_m, front_r;
+        int l = 0, m = 0, r = 0;
+        
+        front_m = _robot.position().fnAdd(_robot.orientation().toVector2().fnMultiply(2));
+        front_l = front_m.fnAdd(_robot.orientation().getLeft().toVector2());
+        front_r = front_m.fnAdd(_robot.orientation().getRight().toVector2());
+
+        if (!map.checkValidBoundary(front_m)
+                || checkExploredState(front_m)==2) {
+            m = 1;
+        }
+
+        if (!map.checkValidBoundary(front_l)
+                || checkExploredState(front_l)==2) {
+            l = 1;
+        }
+        if (!map.checkValidBoundary(front_r)
+                || checkExploredState(front_r)==2) {
+            r = 1;
+        }
+
+        return (m + l + r) == 3;
+    }
     
 
 

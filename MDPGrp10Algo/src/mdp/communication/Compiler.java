@@ -23,7 +23,8 @@ public class Compiler {
     private static final String _CAL_FRONT_ML = "x";
     private static final String _CAL_FRONT_MR = "x";
     private static final String _CAL_RIGHT = "c";
-    private static final String _CAL_LEFT = "z";
+    private static final String _CAL_FRONT = "c";
+    private static final String _CAL_LEFT = "c";
     private static final String _CAL_EMERGENCY = "e";
     
     
@@ -230,6 +231,8 @@ public class Compiler {
                 return _CAL_LEFT + _TRAILER;
             case Emergency:
                 return _CAL_EMERGENCY + _TRAILER;
+            case Front:
+            	return _CAL_FRONT + _TRAILER;
             default:
                 return "";
         }
