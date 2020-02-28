@@ -3,6 +3,7 @@ package mdp.communication;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 import mdp.common.Vector2;
 import mdp.map.Descriptor;
@@ -96,6 +97,58 @@ public class Compiler {
         
         return result;
     }
+    
+    static List<String> compileAndroidActions(List<RobotAction> actions) {
+        List<String> result = new ArrayList<String>();
+        String lastAction = "";
+        for (RobotAction action : actions) {
+            String nextActionStr;
+            switch (action) {
+                case MoveForward:
+                    nextActionStr = _MOVE_FORWARD;
+                    break;
+                case MoveBackward:
+                    nextActionStr = _MOVE_BACKWARD;
+                    break;
+                case RotateLeft:
+                    nextActionStr = _ROTATE_LEFT;
+                    break;
+                case RotateRight:
+                    nextActionStr = _ROTATE_RIGHT;
+                    break;
+                default:
+                    nextActionStr = " ";
+                    break;
+            }
+            if (result.size() != 0) {
+                if (lastAction.equals(nextActionStr)) {
+                    boolean isRotating = lastAction.equals(_ROTATE_LEFT) || lastAction.equals(_ROTATE_RIGHT);
+                    if (isRotating) {
+                        result.add(lastAction);
+                    } else {
+                    	result.add(lastAction);
+                    }
+                } 
+                else {
+                    boolean isRotating = lastAction.equals(_ROTATE_LEFT) || lastAction.equals(_ROTATE_RIGHT);
+                    result.add(nextActionStr);
+                }
+            } else {
+                result.add(nextActionStr);
+            }
+            lastAction = nextActionStr;
+        }
+        boolean isRotating;
+        if (result.size() != 1) {
+            isRotating = lastAction.equals(_ROTATE_LEFT) || lastAction.equals(_ROTATE_RIGHT);
+        } else {
+            isRotating = result.equals(_ROTATE_LEFT) || result.equals(_ROTATE_RIGHT);
+        }
+
+        System.out.println("Sending out android action array: " + result);
+        
+        return result;
+    }
 
     static String compileSmoothActions(List<Vector2> smoothPath, String mode) {
         String result = "";
@@ -154,7 +207,7 @@ public class Compiler {
     public static String compileMap(Map map, int[][] explored) {
         String strResult = Descriptor.stringify(map, explored);
         String[] hexDesc = Descriptor.toHex(strResult);
-        return "{\"grid\" : \""+hexDesc[0] + hexDesc[1]+"\"}";
+        return "{\"grid\" : \""+hexDesc[0] + hexDesc[1]+"\"";
     }
 
     static String compileCalibration(CalibrationType calType) {

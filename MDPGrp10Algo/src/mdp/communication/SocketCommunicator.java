@@ -65,6 +65,7 @@ public class SocketCommunicator {
         System.out.println("Sending out message: " + message);
         _outBuffer.clear();
         _outBuffer = ByteBuffer.wrap(message.getBytes(Charset.forName(_ENCODING)));
+        //System.out.println(_socketChannel.toString());
         _socketChannel.write(_outBuffer);
     }
     

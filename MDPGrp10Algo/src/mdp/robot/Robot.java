@@ -117,8 +117,21 @@ public class Robot {
             if (!Main.isSimulating()) {
             		executionEndTime = System.currentTimeMillis();
             		System.out.println("Computational time for next movement"+ (executionStartTime- executionEndTime) + "ms");
-                
-            	Main.getRpi().sendMoveCommand(bufferedActions, Translator.MODE_0);
+            		//executionStartTime = System.currentTimeMillis();
+                    //Map map = mapViewer.getSubjectiveMap();
+                    //int[][] explored = mapViewer.getExplored();
+            		
+            		LinkedList<RobotAction> rAction = new LinkedList<>();
+            		for(RobotAction action: bufferedActions) {
+            			rAction.add(0, action);
+            			Main.getRpi().sendMoveCommand(rAction, Translator.MODE_0);
+            			Main.getRpi().sendSensingRequest();
+            			rAction.clear();
+            		}
+                    
+                    
+
+            	//Main.getRpi().sendMoveCommand(bufferedActions, Translator.MODE_0);
                 
                 while (!actionCompleted) {
                 }

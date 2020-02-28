@@ -293,7 +293,7 @@ public class ActionFormulator {
             s.front_m = Integer.parseInt(Character.toString(sensingDataFromRPI.charAt(1)));
             s.front_r = Integer.parseInt(Character.toString(sensingDataFromRPI.charAt(2)));
             s.right_f = Integer.parseInt(Character.toString(sensingDataFromRPI.charAt(3)));
-            s.right_m = Integer.parseInt(Character.toString(sensingDataFromRPI.charAt(4)));
+            s.left_m = Integer.parseInt(Character.toString(sensingDataFromRPI.charAt(4)));
             s.left = Integer.parseInt(Character.toString(sensingDataFromRPI.charAt(5)));
 
         }

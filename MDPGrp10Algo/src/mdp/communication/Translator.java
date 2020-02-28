@@ -1,6 +1,8 @@
 package mdp.communication;
 
 import java.io.IOException;
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import java.util.List;
@@ -95,9 +97,53 @@ public class Translator implements ITranslatable {
         try {
             String message = _TO_ANDROID_MARKER
                     + Compiler.compileMap(map, explored)
-                    + _MSG_SEPARATOR
-                    + Compiler.compileActions(actions, MODE_0);
+                    +"}";
+            
             _socketCommunicator.echo(message);
+            
+            
+            
+//            List<String> arrActions=Compiler.compileAndroidActions(actions);
+            
+            String action = _TO_ANDROID_MARKER+ "{"
+            		+ "\"robot\":"
+//                  + "\"" + "rffflfff"
+                  + Compiler.compileActions(actions,MODE_0)
+                  +"\""+ "}";
+            
+            _socketCommunicator.echo(action);
+            
+//            List<String> aActions= new ArrayList<String>();
+//            aActions.add("f");
+//            aActions.add("f");
+//            aActions.add("r");
+//            aActions.add("f");
+//            aActions.add("f");
+//            aActions.add("l");
+            
+//            for(String action:aActions) {
+            	
+//            	this.androidActions(action);
+//            }
+//                    + ",\"robot\":"
+//                    + "\"" + "rffflfff"
+//                    //+ Compiler.compileAndroidActions(actions)
+//                    +"\""+ "}";
+            
+            
+        } catch (IOException ex) {
+            Logger.getLogger(Translator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void androidActions(String robotAction) {
+    	try {
+    		String a;
+        	a = _TO_ANDROID_MARKER
+        			+"{\"robot\" : \""
+        			+robotAction+
+        			"\""+ "}";
+        	_socketCommunicator.echo(a);
         } catch (IOException ex) {
             Logger.getLogger(Translator.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -145,5 +191,9 @@ public class Translator implements ITranslatable {
         } catch (IOException ex) {
             Logger.getLogger(Translator.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public SocketCommunicator getSocketCommunicator() {
+    	return _socketCommunicator;
     }
 }

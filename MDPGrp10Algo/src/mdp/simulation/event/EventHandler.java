@@ -118,11 +118,11 @@ public class EventHandler implements IHandleable {
         _gui.getMainFrame()
                 .getMainPanel()
                 .getIntrCtrlPanel()
-                .getResetBtn().addMouseListener(_onReset());
+                .getResetBtn().addMouseListener(_wrapMouseAdapter(GUIClickEvent.OnReset));
         _gui.getMainFrame()
                 .getMainPanel()
                 .getIntrCtrlPanel()
-                .getStopBtn().addMouseListener(_onStop());
+                .getStopBtn().addMouseListener(_wrapMouseAdapter(GUIClickEvent.OnStop));
         _gui.getMainFrame()
                 .getMainPanel()
                 .getIntrCtrlPanel()
@@ -158,7 +158,7 @@ public class EventHandler implements IHandleable {
                 _onGetHex(e);
                 break;
             case OnReset:
-            	_onReset();
+            	_onReset(e);
 //            case OnCheckWeb:
 //                _onCheckWeb(e);
 //                break;
@@ -187,7 +187,7 @@ public class EventHandler implements IHandleable {
                 _onRestart(e);
                 break;
             case OnStop:
-                _onStop();
+                _onStop(e);
                 break;
             case OnToggleRound:
                 _onToggleRound(e);
@@ -460,10 +460,10 @@ public class EventHandler implements IHandleable {
     
 
 
-    private MouseAdapter _onStop() {
-        return new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
+    private void  _onStop(MouseEvent e) {
+        //return new MouseAdapter() {
+        //    @Override
+         //   public void mouseClicked(MouseEvent e) {
                 if (_shortestPathThread != null) {
                     _shortestPathThread.cancel();
                 }
@@ -471,35 +471,43 @@ public class EventHandler implements IHandleable {
                     _explorationThread.stop();
                 }
                 _gui.getMap().clearAllHighlight();
+                _gui.getRobot().cleanBufferedActions();
+                //For simulation, need to reload the current map
                 _gui.update(_gui.getMap(), new Robot());
                 _gui.trigger(GUIClickEvent.OnStopTimer);
                 _gui.trigger(GUIClickEvent.OnResetTimer);
                 
+                
 
                 System.out.println("Stop completed.");
             }
-        };
-    }
+     //   };
+  //  }
 
-    private MouseAdapter _onReset() {
-        return new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (_shortestPathThread != null) {
-                    _shortestPathThread.cancel();
-                }
-                if (_explorationThread != null) {
-                    _explorationThread.stop();
-                }
-                _gui.reset();
-
+    private void _onReset(MouseEvent e) {
+        //return new MouseAdapter() {
+        //    @Override
+       //     public void mouseClicked(MouseEvent e) {
+    	if (_shortestPathThread != null) {
+            _shortestPathThread.cancel();
+        }
+        if (_explorationThread != null) {
+            _explorationThread.stop();
+        }
+        _gui.getMap().clearAllHighlight();
+        _gui.getRobot().cleanBufferedActions();
+        _gui.update(_gui.getMap(), new Robot());
+        //For simulation, need to reload the current map
+        _gui.trigger(GUIClickEvent.OnStopTimer);
+        _gui.trigger(GUIClickEvent.OnResetTimer);
+        _gui.reset();
+        
                 
-                _gui.trigger(GUIClickEvent.OnStopTimer);
-                _gui.trigger(GUIClickEvent.OnResetTimer);
-                System.out.println("Reset completed.");     
+                 
+         System.out.println("Reset completed.");     
             }
-        };
-    }
+     //   };
+   // }
     
     private void _onRestart(MouseEvent e) {   
     	if (_shortestPathThread != null) {
@@ -508,8 +516,9 @@ public class EventHandler implements IHandleable {
         if (_explorationThread != null) {
             _explorationThread.stop();
         }
+        
+        _gui.getRobot().cleanBufferedActions();
         _gui.reset();
-
         _gui.getMainFrame().dispose();
         Main.startGUI();
         _isShortestPath = true;
@@ -665,7 +674,8 @@ public class EventHandler implements IHandleable {
         if (terminator != null) {
             terminator.observe();
         }
-
+        
+        
         _gui.trigger(GUIClickEvent.OnStartTimer);
         ExplorationSolver.solve(_gui.getMap(), exePeriod);
         System.out.println("Exploration completed.");

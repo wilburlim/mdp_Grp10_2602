@@ -26,5 +26,7 @@ public interface ITranslatable {
     void sendCalibrationCommand(CalibrationType calType);
     
     void sendExplorationEndMarker();
+
+	SocketCommunicator getSocketCommunicator();
     
 }
