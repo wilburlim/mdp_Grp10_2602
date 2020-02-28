@@ -73,14 +73,18 @@ public class Compiler {
                     if (isRotating) {
                         result += _TRAILER + lastAction;
                     } else {
-                        count++;
+                    	//count++;
+                    	result += _TRAILER + lastAction;
                     }
-                } else {
+                } 
+                else {
                     boolean isRotating = lastAction.equals(_ROTATE_LEFT) || lastAction.equals(_ROTATE_RIGHT);
-                    result += (isRotating ? "" : count) + _TRAILER + nextActionStr;
+                   // (isRotating ? "" : count) +
+                    result +=  _TRAILER + nextActionStr;
                     count = 1;
                 }
-            } else {
+            } 
+            else {
                 result += nextActionStr;
             }
             lastAction = nextActionStr;
@@ -91,8 +95,8 @@ public class Compiler {
         } else {
             isRotating = result.equals(_ROTATE_LEFT) || result.equals(_ROTATE_RIGHT);
         }
-
-        result += (isRotating ? "" : count) + _TRAILER;
+        // (isRotating ? "" : count) +
+        result +=  _TRAILER;
         System.out.println("Sending out: " + result);
         
         return result;
