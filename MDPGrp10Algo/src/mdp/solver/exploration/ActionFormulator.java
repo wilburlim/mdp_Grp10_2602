@@ -633,7 +633,7 @@ public class ActionFormulator {
 
         Robot robotSimulator = new Robot(new Vector2(_robot.position().i(), _robot.position().j()),
                 _robot.orientation());
-        robotSimulator.execute(action);
+        //robotSimulator.execute(action);
 
         System.out.println("predictAndSendCalibrationReminder");
         
@@ -652,8 +652,12 @@ public class ActionFormulator {
         if (mapViewer.checkRightFrontBack(robotSimulator)){
             if (Main.isSimulating())
                    System.out.println("Send calibration command " + CalibrationType.Right.toString());
-            else
+            else {
+            	List<RobotAction> actions = new ArrayList<RobotAction>();
+        		actions.add(RobotAction.RotateRight);
+        		Main.getRpi().sendMoveCommand(actions,"" );
                 Main.getRpi().sendCalibrationCommand(CalibrationType.Right);
+            }
         }
         if (mapViewer.checkFrontObstacles(robotSimulator)){
             if (Main.isSimulating())
