@@ -771,12 +771,16 @@ public class MapViewer  {
          * ||map.getPoint(front_m).obstacleState() ==
          * WPObstacleState.IsActualObstacle){ return CalibrationType.Front_MR; }
          */
-        if (!map.checkValidBoundary(right_up)
-                || map.getPoint(right_up).obstacleState() == WPObstacleState.IsActualObstacle)
-            if (!map.checkValidBoundary(right_down)
-                    || map.getPoint(right_down).obstacleState() == WPObstacleState.IsActualObstacle) {
-                if (map.checkValidBoundary(right_middle)
-                        && map.getPoint(right_middle).obstacleState() != WPObstacleState.IsActualObstacle)
+//        if (!map.checkValidBoundary(right_up)||
+        
+          if(!map.checkValidBoundary(right_up)||!map.checkValidBoundary(right_middle)||!map.checkValidBoundary(right_down))
+        	  return false;
+          
+          if(map.getPoint(right_up).obstacleState() == WPObstacleState.IsActualObstacle)
+//            if (!map.checkValidBoundary(right_down)|| 
+        	  if(map.getPoint(right_down).obstacleState() == WPObstacleState.IsActualObstacle) {
+//                if (!map.checkValidBoundary(right_middle)|| 
+        		  if(map.getPoint(right_middle).obstacleState() == WPObstacleState.IsActualObstacle)
                     return true;
             }
 
@@ -811,17 +815,20 @@ public class MapViewer  {
         left_f = left_m.fnAdd(_robot.orientation().toVector2());
         left_b = left_m.fnAdd(_robot.orientation().getBehind().toVector2());
 
-        if (!map.checkValidBoundary(left_m)
-                || checkExploredState(left_m)==2) {
+//        if (!map.checkValidBoundary(left_m)|| 
+        if(!map.checkValidBoundary(left_m)||!map.checkValidBoundary(left_f)||!map.checkValidBoundary(left_b))
+        	return false;
+        
+          if(checkExploredState(left_m)==2) {
             m = 1;
         }
 
-        if (!map.checkValidBoundary(left_f)
-                || checkExploredState(left_f)==2) {
+//        if (!map.checkValidBoundary(left_f)|| 
+          if(checkExploredState(left_f)==2) {
             f = 1;
         }
-        if (!map.checkValidBoundary(left_b)
-                || checkExploredState(left_b)==2) {
+//        if (!map.checkValidBoundary(left_b)|| 
+          if(checkExploredState(left_b)==2) {
             b = 1;
         }
 

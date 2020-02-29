@@ -197,6 +197,71 @@ public class Robot {
             System.out.println("Robot execution interrupted");
         }
     }
+    
+    public void executeAction(int sleepPeriod,RobotAction action) throws IOException {
+        try {
+            
+            ExplorationSolver.setPermitTerminationState(false);    
+            if (!Main.isSimulating()) {
+            		executionEndTime = System.currentTimeMillis();
+            		System.out.println("Computational time for next movement"+ (executionStartTime- executionEndTime) + "ms");
+            		
+            		LinkedList<RobotAction> rAction = new LinkedList<>();
+            		rAction.add(0, action);
+            		Main.getRpi().sendMoveCommand(rAction, Translator.MODE_0);
+            		Main.getRpi().sendSensingRequest();
+            			
+            	//Main.getRpi().sendMoveCommand(bufferedActions, Translator.MODE_0);
+                
+                while (!actionCompleted) {
+                }
+                executionStartTime = System.currentTimeMillis();
+                Map map = mapViewer.getSubjectiveMap();
+                int[][] explored = mapViewer.getExplored();
+
+                // send info to android
+                Main.getRpi().sendInfoToAndroid(map, explored, rAction);
+               
+                //System.out.println("Actions completed");
+                actionCompleted = false;
+                //increment calibrationCounter
+                calibrationCounter +=  rAction.size();
+            }
+      
+            LinkedList<RobotAction> rAction = new LinkedList<>();
+			rAction.add(0, action);
+            int first = 0;
+            int index =0;
+            for (RobotAction act :  rAction) {
+                
+                execute(act);
+                if(mapViewer.checkRobotVisited(_position)){
+                    robotVisitedBefore= true;
+                    
+                }
+                else 
+                    robotVisitedBefore = false;
+                mapViewer.markRobotVisited(_position);
+                
+                //System.out.println("Execute action: "+action.toString());
+                /*f(first == 0 && mapViewer.detectCircle(_position, _orientation)!=-1){
+                		first = 1;
+                		index = mapViewer.detectCircle(_position, _orientation);
+                }
+                mapViewer.markRobotHistory(_position, _orientation);*/
+                Main.getGUI().update(this);
+                
+            if (Main.isSimulating()) {
+                    Thread.sleep(sleepPeriod);
+                } 
+            } 
+                        
+            rAction.clear();
+            ExplorationSolver.setPermitTerminationState(true);   
+        } catch (InterruptedException e) {
+            System.out.println("Robot execution interrupted");
+        }
+    }
 
     public boolean checkIfHavingBufferActions() {
         return !bufferedActions.isEmpty();
