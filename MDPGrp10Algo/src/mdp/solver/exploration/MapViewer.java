@@ -437,7 +437,7 @@ public class MapViewer  {
         if (s.front_m != 0) {
             obstaclePosition = edge.fnAdd(robot.orientation().toVector2().fnMultiply(s.front_m));
             if (map.checkValidBoundary(obstaclePosition)) {
-
+            	System.out.println("obstacle detected at:"+obstaclePosition.toString());
                 markExploredObstacle(obstaclePosition);
             }
             for (i = 1; i < s.front_m; i++) {
@@ -453,7 +453,7 @@ public class MapViewer  {
         if (s.front_l != 0) {
             obstaclePosition = edge_l.fnAdd(robot.orientation().toVector2().fnMultiply(s.front_l));
             if (map.checkValidBoundary(obstaclePosition)) {
-
+            	System.out.println("obstacle detected at:"+obstaclePosition.toString());
                 markExploredObstacle(obstaclePosition);
             }
             for (i = 1; i < s.front_l; i++) {
@@ -469,7 +469,7 @@ public class MapViewer  {
         if (s.front_r != 0) {
             obstaclePosition = edge_r.fnAdd(robot.orientation().toVector2().fnMultiply(s.front_r));
             if (map.checkValidBoundary(obstaclePosition)) {
-
+            	System.out.println("obstacle detected at:"+obstaclePosition.toString());
                 markExploredObstacle(obstaclePosition);
             }
             for (i = 1; i < s.front_r; i++) {
@@ -485,7 +485,7 @@ public class MapViewer  {
         if (s.left != 0) {
             obstaclePosition = edge_l.fnAdd(robot.orientation().getLeft().toVector2().fnMultiply(s.left));
             if (map.checkValidBoundary(obstaclePosition)) {
-
+            	System.out.println("obstacle detected at:"+obstaclePosition.toString());
                 markExploredObstacle(obstaclePosition);
             }
             for (i = 1; i < s.left; i++) {
@@ -501,7 +501,7 @@ public class MapViewer  {
         if (s.right_f != 0) {
             obstaclePosition = edge_r.fnAdd(robot.orientation().getRight().toVector2().fnMultiply(s.right_f));
             if (map.checkValidBoundary(obstaclePosition)) {
-
+            	System.out.println("obstacle detected at:"+obstaclePosition.toString());
                 markExploredObstacle(obstaclePosition);
 
             }
@@ -519,7 +519,7 @@ public class MapViewer  {
 
             obstaclePosition = edge_lm.fnAdd(robot.orientation().getLeft().toVector2().fnMultiply(s.left_m));
             if (map.checkValidBoundary(obstaclePosition)) {
-
+            	System.out.println("obstacle detected at:"+obstaclePosition.toString());
                 markExploredObstacle(obstaclePosition);
 
             }
