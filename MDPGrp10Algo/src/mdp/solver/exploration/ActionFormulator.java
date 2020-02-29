@@ -374,9 +374,9 @@ public class ActionFormulator {
             boolean frontBlocked = (explorationUtil.checkWalkable(_robot, Direction.Up, mapViewer) == Know.No);
             //System.out.println("Check Left Wall " + checkLeftWallCondition(_robot));
             if (checkLeftWallCondition(_robot)) {
-
+            	System.out.println("check left wall true");
                 if (cutRightWall(_robot)) {
-
+                	System.out.println("cut right wall true");
                     // both cut
                     _robot.bufferAction(RobotAction.RotateLeft);
                     view(_robot);

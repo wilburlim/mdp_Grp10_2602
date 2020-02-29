@@ -473,6 +473,7 @@ public class EventHandler implements IHandleable {
                 _gui.getMap().clearAllHighlight();
                 _gui.getRobot().cleanBufferedActions();
                 //For simulation, need to reload the current map
+                
                 _gui.update(_gui.getMap(), new Robot());
                 _gui.trigger(GUIClickEvent.OnStopTimer);
                 _gui.trigger(GUIClickEvent.OnResetTimer);
