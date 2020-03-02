@@ -29,7 +29,7 @@ public class Compiler {
     
     
     private static final String _CAL_LEFT_SPECIAL = "q";
-    private static final String _SENSING_REQUEST = "s";
+    private static final String _SENSING_REQUEST = "t";
     private static final String _TRAILER = "|";
 
     private static final String _DESC_SEPARATOR = "g";
