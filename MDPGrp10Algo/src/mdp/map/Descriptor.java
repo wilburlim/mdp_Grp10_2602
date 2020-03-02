@@ -57,7 +57,7 @@ public class Descriptor {
         for (String curLine : desc.split("\n")) {
             if (curLine.equals("11")) {
                 if (result[0] != null && !result[0].isEmpty()) {
-                    if(resultIndex<1)
+                    //if(resultIndex<1)
                 	 resultIndex++;
                 }
             } 

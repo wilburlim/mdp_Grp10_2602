@@ -215,7 +215,7 @@ public class GridContainer extends JPanel {
                         _SQUARE_SIZE,
                         _SQUARE_SIZE
                     ));
-                	System.out.println(i+","+ j);
+                	//System.out.println(i+","+ j);
                 }
             }
         }

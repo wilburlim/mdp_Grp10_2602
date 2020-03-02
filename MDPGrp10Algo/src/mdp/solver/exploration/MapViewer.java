@@ -437,7 +437,7 @@ public class MapViewer  {
         if (s.front_m != 0) {
             obstaclePosition = edge.fnAdd(robot.orientation().toVector2().fnMultiply(s.front_m));
             if (map.checkValidBoundary(obstaclePosition)) {
-
+            	System.out.println("obstacle detected at:"+obstaclePosition.toString());
                 markExploredObstacle(obstaclePosition);
             }
             for (i = 1; i < s.front_m; i++) {
@@ -453,7 +453,7 @@ public class MapViewer  {
         if (s.front_l != 0) {
             obstaclePosition = edge_l.fnAdd(robot.orientation().toVector2().fnMultiply(s.front_l));
             if (map.checkValidBoundary(obstaclePosition)) {
-
+            	System.out.println("obstacle detected at:"+obstaclePosition.toString());
                 markExploredObstacle(obstaclePosition);
             }
             for (i = 1; i < s.front_l; i++) {
@@ -469,7 +469,7 @@ public class MapViewer  {
         if (s.front_r != 0) {
             obstaclePosition = edge_r.fnAdd(robot.orientation().toVector2().fnMultiply(s.front_r));
             if (map.checkValidBoundary(obstaclePosition)) {
-
+            	System.out.println("obstacle detected at:"+obstaclePosition.toString());
                 markExploredObstacle(obstaclePosition);
             }
             for (i = 1; i < s.front_r; i++) {
@@ -485,7 +485,7 @@ public class MapViewer  {
         if (s.left != 0) {
             obstaclePosition = edge_l.fnAdd(robot.orientation().getLeft().toVector2().fnMultiply(s.left));
             if (map.checkValidBoundary(obstaclePosition)) {
-
+            	System.out.println("obstacle detected at:"+obstaclePosition.toString());
                 markExploredObstacle(obstaclePosition);
             }
             for (i = 1; i < s.left; i++) {
@@ -501,7 +501,7 @@ public class MapViewer  {
         if (s.right_f != 0) {
             obstaclePosition = edge_r.fnAdd(robot.orientation().getRight().toVector2().fnMultiply(s.right_f));
             if (map.checkValidBoundary(obstaclePosition)) {
-
+            	System.out.println("obstacle detected at:"+obstaclePosition.toString());
                 markExploredObstacle(obstaclePosition);
 
             }
@@ -519,7 +519,7 @@ public class MapViewer  {
 
             obstaclePosition = edge_lm.fnAdd(robot.orientation().getLeft().toVector2().fnMultiply(s.left_m));
             if (map.checkValidBoundary(obstaclePosition)) {
-
+            	System.out.println("obstacle detected at:"+obstaclePosition.toString());
                 markExploredObstacle(obstaclePosition);
 
             }
@@ -771,12 +771,16 @@ public class MapViewer  {
          * ||map.getPoint(front_m).obstacleState() ==
          * WPObstacleState.IsActualObstacle){ return CalibrationType.Front_MR; }
          */
-        if (!map.checkValidBoundary(right_up)
-                || map.getPoint(right_up).obstacleState() == WPObstacleState.IsActualObstacle)
-            if (!map.checkValidBoundary(right_down)
-                    || map.getPoint(right_down).obstacleState() == WPObstacleState.IsActualObstacle) {
-                if (map.checkValidBoundary(right_middle)
-                        && map.getPoint(right_middle).obstacleState() != WPObstacleState.IsActualObstacle)
+//        if (!map.checkValidBoundary(right_up)||
+        
+          if(!map.checkValidBoundary(right_up)||!map.checkValidBoundary(right_middle)||!map.checkValidBoundary(right_down))
+        	  return false;
+          
+          if(map.getPoint(right_up).obstacleState() == WPObstacleState.IsActualObstacle)
+//            if (!map.checkValidBoundary(right_down)|| 
+        	  if(map.getPoint(right_down).obstacleState() == WPObstacleState.IsActualObstacle) {
+//                if (!map.checkValidBoundary(right_middle)|| 
+        		  if(map.getPoint(right_middle).obstacleState() == WPObstacleState.IsActualObstacle)
                     return true;
             }
 
@@ -811,17 +815,20 @@ public class MapViewer  {
         left_f = left_m.fnAdd(_robot.orientation().toVector2());
         left_b = left_m.fnAdd(_robot.orientation().getBehind().toVector2());
 
-        if (!map.checkValidBoundary(left_m)
-                || checkExploredState(left_m)==2) {
+//        if (!map.checkValidBoundary(left_m)|| 
+        if(!map.checkValidBoundary(left_m)||!map.checkValidBoundary(left_f)||!map.checkValidBoundary(left_b))
+        	return false;
+        
+          if(checkExploredState(left_m)==2) {
             m = 1;
         }
 
-        if (!map.checkValidBoundary(left_f)
-                || checkExploredState(left_f)==2) {
+//        if (!map.checkValidBoundary(left_f)|| 
+          if(checkExploredState(left_f)==2) {
             f = 1;
         }
-        if (!map.checkValidBoundary(left_b)
-                || checkExploredState(left_b)==2) {
+//        if (!map.checkValidBoundary(left_b)|| 
+          if(checkExploredState(left_b)==2) {
             b = 1;
         }
 

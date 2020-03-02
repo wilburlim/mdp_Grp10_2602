@@ -71,7 +71,8 @@ public class ExplorationSolver {
         // default to rotate in order to get initial sensing data
         _robot.bufferAction(RobotAction.RotateLeft);
         _robot.executeBufferActions(ExplorationSolver.getExePeriod());
-        actionFormulator.predictAndSendCalibrationReminder(_robot, RobotAction.RotateLeft);
+        actionFormulator.calibrateCommand();
+        _robot.bufferAction(RobotAction.RotateRight);
         _robot.bufferAction(RobotAction.RotateRight);
         _robot.executeBufferActions(ExplorationSolver.getExePeriod());
         ////////////
