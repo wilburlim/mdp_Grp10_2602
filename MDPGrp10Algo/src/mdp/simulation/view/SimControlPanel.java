@@ -16,6 +16,7 @@ public class SimControlPanel extends JPanel {
     private JCheckBox _simCheckBox;
     private JButton _connectBtn;
     private JTextField _wayPoint;
+    private JButton _testSensorsBtn;
 
     public SimControlPanel() {
         // config
@@ -25,12 +26,14 @@ public class SimControlPanel extends JPanel {
         _simCheckBox = new JCheckBox("Simulation", Main.isSimulating());
         _connectBtn = new JButton("Connect to RPi");
         _wayPoint = new JTextField("11,11", 5);
+        _testSensorsBtn = new JButton("Test sensors");
         this.add(_simCheckBox);
         this.add(_connectBtn);
         this.add(_wayPoint);
         JLabel wayPointLabel = new JLabel("waypoint");
         wayPointLabel.setForeground(Color.WHITE);
         this.add(wayPointLabel);
+        this.add(_testSensorsBtn);
     }
 
     public JCheckBox getSimCheckBox() {
@@ -43,6 +46,8 @@ public class SimControlPanel extends JPanel {
     public JTextField getWayPoint() {
         return _wayPoint;
     }
-    
+    public JButton getTestBtn() {
+        return _testSensorsBtn;
+    }
     
 }
