@@ -11,6 +11,7 @@ import mdp.communication.Translator;
 import mdp.solver.exploration.ActionFormulator;
 import mdp.solver.exploration.ExplorationSolver;
 import mdp.solver.exploration.MapViewer;
+import mdp.solver.exploration.SensingData;
 import mdp.Main;
 import mdp.map.Map;
 
@@ -21,7 +22,7 @@ public class Robot {
 
     private static volatile int calibrationCounter = 0;
     private static volatile boolean actionCompleted = false;
-
+    private static volatile String sensingDataFromRPI;
     private static volatile boolean robotVisitedBefore = false;
     
     private static LinkedList<RobotAction> bufferedActions = new LinkedList<>();
@@ -112,7 +113,7 @@ public class Robot {
     
     public void executeBufferActions(int sleepPeriod) throws IOException {
         try {
-            
+        	
             ExplorationSolver.setPermitTerminationState(false);    
             if (!Main.isSimulating()) {
             		executionEndTime = System.currentTimeMillis();
@@ -122,10 +123,20 @@ public class Robot {
                     //int[][] explored = mapViewer.getExplored();
             		
             		LinkedList<RobotAction> rAction = new LinkedList<>();
+            		LinkedList<RobotAction> executedAction = new LinkedList<>();
+            		
             		for(RobotAction action: bufferedActions) {
+            			if(action==RobotAction.MoveForward) {
+            				Main.getRpi().sendSensingRequest();
+            				boolean obs = this.checkifObstacleAhead();
+            				if(obs) {
+            					break;
+            				}
+            			}
             			rAction.add(0, action);
             			Main.getRpi().sendMoveCommand(rAction, Translator.MODE_0);
             			Main.getRpi().sendSensingRequest();
+            			executedAction.add(action);
             			rAction.clear();
             		}
                     
@@ -138,7 +149,11 @@ public class Robot {
                 executionStartTime = System.currentTimeMillis();
                 Map map = mapViewer.getSubjectiveMap();
                 int[][] explored = mapViewer.getExplored();
-
+                
+                if(!Main.isSimulating()) {
+                	bufferedActions=executedAction;
+                	executedAction.clear();
+                }
                 // send info to android
                 Main.getRpi().sendInfoToAndroid(map, explored, bufferedActions);
 
@@ -278,6 +293,20 @@ public class Robot {
     
     public  LinkedList<RobotAction> getBufferedActions(){
         return bufferedActions;
+    }
+    
+    public boolean checkifObstacleAhead() {
+    	SensingData s = new SensingData();
+    	s.front_l = Integer.parseInt(Character.toString(sensingDataFromRPI.charAt(0)));
+        s.front_m = Integer.parseInt(Character.toString(sensingDataFromRPI.charAt(1)));
+        s.front_r = Integer.parseInt(Character.toString(sensingDataFromRPI.charAt(2)));
+        if(s.front_l==1 || s.front_m==1 || s.front_r==1) {
+        	return true;
+        }
+        return false;
+    }
+    public static void sensingDataCallback(String input) {
+        sensingDataFromRPI = input;
     }
 
 }

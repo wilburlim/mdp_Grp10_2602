@@ -115,18 +115,20 @@ public class EventHandler implements IHandleable {
                 .getMainPanel()
                 .getIntrCtrlPanel()
                 .getTermRoundCheckbox().addMouseListener(_wrapMouseAdapter(GUIClickEvent.OnToggleRound));
-        _gui.getMainFrame()
+/*        _gui.getMainFrame()
                 .getMainPanel()
-                .getIntrCtrlPanel()
-                .getResetBtn().addMouseListener(_wrapMouseAdapter(GUIClickEvent.OnReset));
+                .getIntrCtrlPanel();
+        		.getResetBtn().addMouseListener(_wrapMouseAdapter(GUIClickEvent.OnReset)); */
+        
         _gui.getMainFrame()
                 .getMainPanel()
                 .getIntrCtrlPanel()
                 .getStopBtn().addMouseListener(_wrapMouseAdapter(GUIClickEvent.OnStop));
-        _gui.getMainFrame()
+/*        _gui.getMainFrame()
                 .getMainPanel()
-                .getIntrCtrlPanel()
-                .getRestartBtn().addMouseListener(_wrapMouseAdapter(GUIClickEvent.OnRestart));
+                .getIntrCtrlPanel();
+        		.getRestartBtn().addMouseListener(_wrapMouseAdapter(GUIClickEvent.OnRestart)); */
+        
         // simulation/non-simulation control event
         _gui.getMainFrame()
                 .getMainPanel()
@@ -140,6 +142,10 @@ public class EventHandler implements IHandleable {
                 .getMainPanel()
                 .getSimCtrlPanel()
                 .getConnectBtn().addMouseListener(_wrapMouseAdapter(GUIClickEvent.OnConnectBtn));
+        _gui.getMainFrame()
+        .getMainPanel()
+        .getSimCtrlPanel()
+        .getTestBtn().addMouseListener(_wrapMouseAdapter(GUIClickEvent.OnTestBtn));
     }
 
     @Override
@@ -207,10 +213,17 @@ public class EventHandler implements IHandleable {
             case OnResetTimer:
                 _onResetTimer();
                 break;
+            case OnTestBtn:
+            	_onTestButton();
         }
     }
 
-    private void _onSetWayPoint(MouseEvent e) {
+    private void _onTestButton(){
+		Main.getRpi().sendSensingRequest();
+		
+	}
+
+	private void _onSetWayPoint(MouseEvent e) {
 		// TODO Auto-generated method stub
 		wayPoint=Main.wayPoint;
 		if(wayPoint.charAt(0) == 'w' && wayPoint.charAt(3) == 'p') {
@@ -795,9 +808,9 @@ public class EventHandler implements IHandleable {
         List<Vector2> listFinal= new ArrayList<Vector2>();
 		listFinal.addAll(normalSolve);
 		listFinal.addAll(normalSolve2);
-		 for (Vector2 curPos : listFinal) {
+/*		 for (Vector2 curPos : listFinal) {
 			 System.out.println(curPos.toString());
-		 }
+		 } */
         //List<Vector2> diagonalSolve = AStarUtil.smoothenPath(map, solver.solve(map, robot, goalpos, SolveType.Smooth).shortestPath, false);
         //List<Vector2> normalSolve = solver.solve(map, robot).shortestPath;
         List<Vector2> diagonalSolve = AStarUtil.smoothenPath(map, solver.solve(map, robot, SolveType.Smooth).shortestPath, false);

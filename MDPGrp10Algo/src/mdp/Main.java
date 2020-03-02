@@ -105,6 +105,7 @@ public class Main {
                     if (inStr.length() == 6) {
                         System.out.println("Analyzing sensing information");
                         ActionFormulator.sensingDataCallback(inStr);
+                        Robot.sensingDataCallback(inStr);
                         Robot.actionCompletedCallBack();
                     } 
                     //Message from andriod waypoint 'waypoint(x,y)'
