@@ -18,6 +18,7 @@ public class RunControlPanel extends JPanel {
     private JButton _shortestPathWPBtn;
     private JButton _shortestPathBtn;
     private JButton _TestWayPointBtn;
+    private JButton _ImagePathBtn;
     private JTextField _exePeriod;
     
     public RunControlPanel() {
@@ -30,6 +31,7 @@ public class RunControlPanel extends JPanel {
         _shortestPathWPBtn = new JButton("Shortest Path (WayPoint)");
         _shortestPathBtn = new JButton("Shortest Path");
         _TestWayPointBtn = new JButton("Test WayPoint");
+        _ImagePathBtn =  new JButton("Image Path");
 //        _combinedBtn = new JButton("Combined");
         _exePeriod = new JTextField("100", 5);
         this.add(_explorationBtn);
@@ -38,6 +40,7 @@ public class RunControlPanel extends JPanel {
         this.add(_shortestPathBtn);
       //this.add(_TestWayPointBtn);
 //        this.add(_combinedBtn);
+        this.add(_ImagePathBtn);
         this.add(_exePeriod);
         JLabel exePeriodLabel = new JLabel("s/action");
         exePeriodLabel.setForeground(Color.WHITE);
@@ -66,6 +69,10 @@ public class RunControlPanel extends JPanel {
 //    public JButton getCombinedBtn() {
 //        return _combinedBtn;
 //    }
+    
+    public JButton getImagePathBtn() {
+    	return _ImagePathBtn;
+    }
 
     public JTextField getExePeriod() {
         return _exePeriod;
