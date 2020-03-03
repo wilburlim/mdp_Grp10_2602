@@ -73,6 +73,7 @@ public class ExplorationSolver {
         _robot.executeBufferActions(ExplorationSolver.getExePeriod());
         actionFormulator.calibrateCommand();
         _robot.bufferAction(RobotAction.RotateRight);
+        _robot.executeBufferActions(ExplorationSolver.getExePeriod());
         _robot.bufferAction(RobotAction.RotateRight);
         _robot.executeBufferActions(ExplorationSolver.getExePeriod());
         ////////////
