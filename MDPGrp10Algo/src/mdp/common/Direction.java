@@ -25,4 +25,33 @@ public enum Direction {
             default: return new Vector2(0, 0);
         }
     }
+    
+    public static Direction getDesiredOrientation(Vector2 ObstacleWayPoint, Vector2 ObstaclePosition)
+    {
+    	int x = ObstaclePosition.i()-ObstacleWayPoint.i();
+    	int y = ObstaclePosition.j()-ObstacleWayPoint.j();
+    	Direction result = Direction.Right;
+    	 //facing right is down
+        //facing up is right
+        //facing left is up
+        //facing down is left
+    	if(x > 0 && y == 0)
+    	{
+    		result = Direction.Down;
+    	}
+    	if(x < 0 && y == 0)
+    	{
+    		result =  Direction.Up;
+    	}
+    	if(x == 0 && y > 0)
+    	{
+    		result =  Direction.Right;
+    	}
+    	if(x == 0 && y < 0)
+    	{
+    		result =  Direction.Left;
+    	}
+    	return result;
+    		  	
+    }
 }

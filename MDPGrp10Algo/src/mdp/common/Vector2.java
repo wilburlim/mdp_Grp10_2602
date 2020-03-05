@@ -86,4 +86,6 @@ public class Vector2 { //object for storing coordinates i and j for a vector poi
     public boolean equals(Object obj) {
         return equals((Vector2) obj);
     }
+    
+    
 }
