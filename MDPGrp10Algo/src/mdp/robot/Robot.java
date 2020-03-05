@@ -31,7 +31,7 @@ public class Robot {
     private long executionStartTime = System.currentTimeMillis();
     private long executionEndTime ;
     public Robot() {
-        this(new Vector2(1, 1), Direction.Up); //right is up in this case lmao
+        this(new Vector2(1, 1), Direction.Right); //right is up in this case lmao
     }
 
     public Robot(Vector2 position, Direction direction) {

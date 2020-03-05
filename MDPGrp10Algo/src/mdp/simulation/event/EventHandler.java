@@ -105,10 +105,6 @@ public class EventHandler implements IHandleable {
     	.getMainPanel()
     	.getRunCtrlPanel()
     	.getShortestPathBtn().addMouseListener(_wrapMouseAdapter(GUIClickEvent.OnShortestPath));
-        _gui.getMainFrame()
-    		.getMainPanel()
-    		.getRunCtrlPanel()
-    		.getImagePathBtn().addMouseListener(_wrapMouseAdapter(GUIClickEvent.OnImagePath));
 //        _gui.getMainFrame()
 //                .getMainPanel()
 //                .getRunCtrlPanel()
@@ -219,65 +215,8 @@ public class EventHandler implements IHandleable {
                 break;
             case OnTestBtn:
             	_onTestButton();
-            case OnImagePath:
-            	_onImagePath(e);
         }
     }
-    
-    private void _onImagePath(MouseEvent e) {
-        /*try {
-            int exePeriod = Integer.parseInt(
-                    _gui.getMainFrame()
-                            .getMainPanel()
-                            .getRunCtrlPanel()
-                            .getExePeriod().getText());
-                    */
-            
-            System.out.println("ImageButton Pressed");
-            
-            List<Vector2> obstacleList = _gui.getMap().getObstacleList();
-            System.out.println(obstacleList); 
-            
-            List<ArrayList<Vector2>> listOfLists = _gui.getMap().generateObstacleWayPointList(obstacleList);
-            System.out.println(listOfLists); 
-            
-            //function to return array of obstacles from map
-            //Array of waypoint to check
-            //for loop for each waypoint shortest path
-            
-            
-     
-            //_shortestPathProcedure2(exePeriod);
-            //_gui.trigger(GUIClickEvent.OnStopTimer); can't put it here as try will block
-         /*catch (IOException e1) {
-            // TODO Auto-generated catch block
-         //   e1.printStackTrace();
-        }*/
-    }
-    
-    //Look up gui for obstacle list after exploration
-    	
-    	
-    	
-        //Map map = ExplorationSolver.getMapViewer().getSubjectiveMap();
-        //int[][] explored = ExplorationSolver.getMapViewer().getExplored();
-
-        //String descStr = Descriptor.stringify(map, explored);
-        //String content = String.join("\n", Descriptor.toHex(descStr));
-        
-        //System.out.println(Compiler.compileMap(map, explored));
-
-       // HexFrame hexFrame = new HexFrame();
-        //hexFrame
-        //       .getHexFramePanel()
-         //       .getHexTextArea().setText(content);
-
-        //System.out.println("Get hex completed.");
-		//return null ;
-    //}
-    
-    
-    
 
     private void _onTestButton(){
 		Main.getRpi().sendSensingRequest();

@@ -1,12 +1,10 @@
 package mdp.map;
 
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import mdp.common.Console;
 import mdp.robot.Robot;
 import mdp.common.Vector2;
-
 
 public class Map {
     // constants
@@ -88,120 +86,6 @@ public class Map {
     private void _setObstacle(Vector2 pos, WPObstacleState obsState) {
         _wpMap[pos.i()][pos.j()].obstacleState(obsState);
     }
-    
-    public List<Vector2> getObstacleList() {
-    	List<Vector2> obstacleList = new ArrayList<Vector2>();
-    	for (int i = 0; i < DIM_I; i++) {  
-            for (int j = 0; j < DIM_J; j++) {
-            	if(_wpMap[i][j].obstacleState() ==  WPObstacleState.IsActualObstacle)
-            	{
-            		Vector2 cur_vector = new Vector2(i,j);
-            		obstacleList.add(cur_vector);	
-            	}
-            	
-            	
-            }
-            
-        }
-    	return obstacleList;
-    	
-    }
-    
-    public List<ArrayList<Vector2>> generateObstacleWayPointList(List<Vector2> obstacleList){
-    	List<ArrayList<Vector2>> listOfLists = new ArrayList<ArrayList<Vector2>>();
-    	//for each obstacle identified in the obstacle list in map from getObstacleList()
-    	for (Vector2 obstacle_vector : obstacleList) {
-    		
-    		
-    		ArrayList<Vector2> left_list = new ArrayList<Vector2>();
-    		ArrayList<Vector2> right_list = new ArrayList<Vector2>();
-    		ArrayList<Vector2> top_list = new ArrayList<Vector2>();
-    		ArrayList<Vector2> btm_list = new ArrayList<Vector2>();
-    		
-    		//find the vector pos 1 grid away for the 4 directions from that obstacle
-    		
-    		
-    		
-    		Vector2 obstacle_vector_btm_1 = new Vector2(obstacle_vector.i(), obstacle_vector.j() -2);
-    		
-    		System.out.println(_wpMap[obstacle_vector.i() -1][obstacle_vector.j()].obstacleState());
-    		System.out.println(_wpMap[obstacle_vector.i() -1][obstacle_vector.j()].specialState());
-    		
-    		if(_wpMap[obstacle_vector.i() -1][obstacle_vector.j()].obstacleState() != WPObstacleState.IsActualObstacle 
-    			&& _wpMap[obstacle_vector.i() -1][obstacle_vector.j()].specialState() != WPSpecialState.IsClosedPoint)
-    		{
-    			if(_wpMap[obstacle_vector.i() -2][obstacle_vector.j()].obstacleState() != WPObstacleState.IsActualObstacle
-    		    && _wpMap[obstacle_vector.i() -2][obstacle_vector.j()].specialState() != WPSpecialState.IsClosedPoint)
-    			{
-    				Vector2 obstacle_vector_left = new Vector2(obstacle_vector.i() -2, obstacle_vector.j());
-    				left_list.add(obstacle_vector_left);
-    				left_list.add(obstacle_vector);
-    				listOfLists.add(left_list);
-    			}
-    		} // first if for left 2 grids away
-    		
-    		if(_wpMap[obstacle_vector.i() +1][obstacle_vector.j()].obstacleState() != WPObstacleState.IsActualObstacle 
-    	    		 && _wpMap[obstacle_vector.i() +1][obstacle_vector.j()].specialState() != WPSpecialState.IsClosedPoint)
-    	    		{
-    	    			if(_wpMap[obstacle_vector.i() +2][obstacle_vector.j()].obstacleState() != WPObstacleState.IsActualObstacle
-    	    		     && _wpMap[obstacle_vector.i() +2][obstacle_vector.j()].specialState() != WPSpecialState.IsClosedPoint)
-    	    			{
-    	    				Vector2 obstacle_vector_right = new Vector2(obstacle_vector.i() +2, obstacle_vector.j());
-    	    				right_list.add(obstacle_vector_right);
-    	    				right_list.add(obstacle_vector);
-    	    				listOfLists.add(right_list);
-    	    			}
-    	    		} // second if for right 2 grids away
-    		
-    		if(_wpMap[obstacle_vector.i()][obstacle_vector.j()+1].obstacleState() != WPObstacleState.IsActualObstacle 
-   	    		 && _wpMap[obstacle_vector.i()][obstacle_vector.j()+1].specialState() != WPSpecialState.IsClosedPoint)
-   	    		{
-   	    			if(_wpMap[obstacle_vector.i()][obstacle_vector.j()+2].obstacleState() != WPObstacleState.IsActualObstacle
-   	    		     && _wpMap[obstacle_vector.i()][obstacle_vector.j()+2].specialState() != WPSpecialState.IsClosedPoint)
-   	    			{
-   	    				Vector2 obstacle_vector_top = new Vector2(obstacle_vector.i(), obstacle_vector.j() +2);
-   	    				top_list.add(obstacle_vector_top);
-   	    				top_list.add(obstacle_vector);
-   	    				listOfLists.add(top_list);
-   	    			}
-   	    		} // third if for top 2 grids away
-    		
-    		if(_wpMap[obstacle_vector.i()][obstacle_vector.j()-1].obstacleState() != WPObstacleState.IsActualObstacle 
-      	    		 && _wpMap[obstacle_vector.i()][obstacle_vector.j()-1].specialState() != WPSpecialState.IsClosedPoint)
-      	    		{
-      	    			if(_wpMap[obstacle_vector.i()][obstacle_vector.j()-2].obstacleState() != WPObstacleState.IsActualObstacle
-      	    		     && _wpMap[obstacle_vector.i()][obstacle_vector.j()-2].specialState() != WPSpecialState.IsClosedPoint)
-      	    			{
-      	    				Vector2 obstacle_vector_btm = new Vector2(obstacle_vector.i(), obstacle_vector.j() -2);
-      	    				btm_list.add(obstacle_vector_btm);
-      	    				btm_list.add(obstacle_vector);
-      	    				listOfLists.add(btm_list);
-      	    			}
-      	    		} // fourth if for btm 2 grids away
-    		
-   
-    	}
-    	
-    	/*
-    	Vector2 v1 = new Vector2(4,14);
-    	Vector2 v2 = new Vector2(6,14);
-    	list1.add(v1);
-    	list1.add(v2);
-    	ArrayList<Vector2> list2 = new ArrayList<Vector2>();
-    	Vector2 v3 = new Vector2(9,14);
-    	Vector2 v4 = new Vector2(7,14);
-    	list2.add(v3);
-    	list2.add(v4);
-    	listOfLists.add(list1);
-    	listOfLists.add(list2);
-    	return listOfLists;*/
-    	
-    	return listOfLists;
-    	
-    }
-    	
-    	
-    
     
     private void _processObstacleList(List<Vector2> obsList, 
                                         WPObstacleState actualState,
