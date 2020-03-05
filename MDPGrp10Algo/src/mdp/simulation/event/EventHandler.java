@@ -234,20 +234,18 @@ public class EventHandler implements IHandleable {
             System.out.println(obstacleList); 
             
             
-            //this obstaclewaypointlist already takes into account the boundaries and 4 directions
+            //this obstaclewaypointlist already takes into account the boundaries and 4 directions and 3x3 square
             List<ArrayList<Vector2>> obswaypointList = _gui.getMap().generateObstacleWayPointList(obstacleList);
-            System.out.println(obswaypointList);
+            System.out.println("All Valid Obstacle WayPoints: " + obswaypointList);
             
             /*
             [(5, 11)]
             [[(3, 11), (5, 11)], [(7, 11), (5, 11)], [(5, 13), (5, 11)], [(5, 9), (5, 11)]]*/
             
             ///////////////Shortest Path to each waypoint using forloop///////////////////
-            System.out.println("Starting Shortest Path XXX");
+            System.out.println("Starting Image Run");
             _isShortestPath = true;
             
-           // Vector2 obstaclewaypoint = new Vector2(3,11);
-            //Vector2 obstaclewaypoint2 = new Vector2(11,11);
             
             try {
                 int exePeriod = Integer.parseInt(
@@ -848,16 +846,123 @@ public class EventHandler implements IHandleable {
     
     
     private void _shortestPathProcedureImage(int exePeriod, List<ArrayList<Vector2>> obswaypointList) throws IOException {
-        System.out.println("Starting Shortest Path to all obstacle waypoint");
+        System.out.println("\n" + "Starting Shortest Path to all obstacle waypoint");
         _isShortestPath = true;
         _gui.trigger(GUIClickEvent.OnStartTimer);
         
         AStarSolver solver = new AStarSolver();
         Map map = _gui.getMap();
         Robot robot = _gui.getRobot();
+        LinkedList<RobotAction> actions = new LinkedList<RobotAction>();
+        Vector2 startingVector = new Vector2(1,1);
+        Direction starting_direction = Direction.Right;  //Facing North
         
+        //For Loop
+        for (int obs = 0; obs < (obswaypointList.size()); obs++)
+        {
+        	Vector2 vec_waypoint = obswaypointList.get(obs).get(0);
+        	Vector2 obstacle = obswaypointList.get(obs).get(1);
+        	Direction desired_Orientation = Direction.getDesiredOrientation(vec_waypoint, obstacle);
+    		System.out.println("Desired Orientation = " + desired_Orientation);
+    	    
+    		//Default values for iteration == 0
+    		Direction prev_direction = starting_direction;
+			Vector2 prev_vec_waypoint = startingVector;
+			Vector2 prev_obstacle = obswaypointList.get(obs).get(1); // unnecessary
+    		
+    		if(obs != 0)
+    		{
+    			//Override if not first obstacle
+    			prev_vec_waypoint = obswaypointList.get(obs-1).get(0);
+            	prev_obstacle = obswaypointList.get(obs-1).get(1);
+    			prev_direction = Direction.getDesiredOrientation(prev_vec_waypoint, prev_obstacle);
+    		}
+    		
+    		// Go Normal Solve
+            List<Vector2> normalSolve = solver.solve2(map, prev_vec_waypoint, vec_waypoint).shortestPath;
+            map.highlight(normalSolve, WPSpecialState.IsPathPoint);
+            
+            //By default is facing North which is right
+            //facing right is down //facing up is right
+            //facing left is up //facing down is left
+            ImagePath tempStore = RobotAction
+            		.fromPath_SetPos(_gui.getRobot(), normalSolve, prev_vec_waypoint, prev_direction);
+            actions.addAll(tempStore.getActionList());		
+            Direction cur_Orientation = tempStore.getCurrentOrientation();
+            
+            if(cur_Orientation != desired_Orientation)  // |Robot|   -> |OBS|
+            {
+            	if(desired_Orientation == Direction.Up)
+            	{
+            		if(cur_Orientation == Direction.Right)
+            		{
+            			actions.add(RobotAction.RotateLeft);
+            		}
+            		else if(cur_Orientation == Direction.Down)
+            		{
+            			actions.add(RobotAction.RotateLeft);
+            			actions.add(RobotAction.RotateLeft);
+            		}
+            		else if(cur_Orientation == Direction.Left)
+            		{
+            			actions.add(RobotAction.RotateRight);
+            		}
+            	}
+            	if(desired_Orientation == Direction.Down)    // |OBS|    <- |Robot|
+            	{
+            		if(cur_Orientation == Direction.Right) 
+            		{
+            			actions.add(RobotAction.RotateRight);
+            		}
+            		if(cur_Orientation == Direction.Left) 
+            		{
+            			actions.add(RobotAction.RotateLeft);
+            		}
+            		if(cur_Orientation == Direction.Up) 
+            		{
+            			actions.add(RobotAction.RotateLeft);
+            			actions.add(RobotAction.RotateLeft);
+            		}
+            	}        	
+            	if(desired_Orientation == Direction.Left)    //  |Robot|
+            		//											  |OBS|
+            	{
+            		if(cur_Orientation == Direction.Up) 
+            		{
+            			actions.add(RobotAction.RotateLeft);
+            		}
+            		if(cur_Orientation == Direction.Right) 
+            		{
+            			actions.add(RobotAction.RotateLeft);
+            			actions.add(RobotAction.RotateLeft);
+            		}
+            		if(cur_Orientation == Direction.Down) 
+            		{
+            			actions.add(RobotAction.RotateRight);
+            		}
+            	}
+            	if(desired_Orientation == Direction.Right)    //    |OBS|
+            		//											  |Robot|
+            	{
+            		if(cur_Orientation == Direction.Up) 
+            		{
+            			actions.add(RobotAction.RotateRight);
+            		}
+            		if(cur_Orientation == Direction.Left) 
+            		{
+            			actions.add(RobotAction.RotateLeft);
+            			actions.add(RobotAction.RotateLeft);
+            		}
+            		if(cur_Orientation == Direction.Down) 
+            		{
+            			actions.add(RobotAction.RotateLeft);
+            		}
+            	}
+            }	
+        }
         
-        //First Obstacle
+       
+        /*//First Obstacle
 		Vector2 vec_waypoint = obswaypointList.get(0).get(0);
 		Vector2 obstacle = obswaypointList.get(0).get(1);
 		Direction desired_Orientation = Direction.getDesiredOrientation(vec_waypoint, obstacle);
@@ -873,7 +978,7 @@ public class EventHandler implements IHandleable {
         //facing left is up //facing down is left
         ImagePath tempStore = RobotAction
         		.fromPath_SetPos(_gui.getRobot(), normalSolve, new Vector2(1,1), starting_direction);
-        LinkedList<RobotAction> actions = tempStore.getActionList();		
+        actions.addAll(tempStore.getActionList());		
         Direction cur_Orientation = tempStore.getCurrentOrientation();
         
         
@@ -947,14 +1052,6 @@ public class EventHandler implements IHandleable {
         	}
         }
         
-             
-        
-        //List<Vector2> listFinal= new ArrayList<Vector2>();
-		//listFinal.addAll(normalSolve);
-		//listFinal.addAll(normalSolve2);
-/*		 for (Vector2 curPos : listFinal) {
-			 System.out.println(curPos.toString());
-		 } */
         
         Vector2 vec_waypoint2 = obswaypointList.get(1).get(0);
 		Vector2 obstacle2 = obswaypointList.get(1).get(1);
@@ -1042,17 +1139,8 @@ public class EventHandler implements IHandleable {
         	}
         }
         
-        
-    
-        
-        
-        
-        
-        
-
-
        // System.out.println("Main.isSimulating() = " + Main.isSimulating());
-            
+       */     
             
         
 
