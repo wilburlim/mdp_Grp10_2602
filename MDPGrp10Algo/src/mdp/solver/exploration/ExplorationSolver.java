@@ -72,9 +72,10 @@ public class ExplorationSolver {
         _robot.bufferAction(RobotAction.RotateLeft);
         _robot.executeBufferActions(ExplorationSolver.getExePeriod());
         actionFormulator.calibrateCommand();
-        _robot.bufferAction(RobotAction.RotateRight);
+        _robot.bufferAction(RobotAction.RotateLeft);
         _robot.executeBufferActions(ExplorationSolver.getExePeriod());
-        _robot.bufferAction(RobotAction.RotateRight);
+        actionFormulator.calibrateCommand();
+        _robot.bufferAction(RobotAction.RotateLeft);
         _robot.executeBufferActions(ExplorationSolver.getExePeriod());
         ////////////
         // start exploration
@@ -215,6 +216,16 @@ public class ExplorationSolver {
             _robot.bufferAction(RobotAction.RotateRight);
             _robot.executeBufferActions(_exePeriod);
         }
+        _robot.bufferAction(RobotAction.RotateLeft);
+        _robot.executeBufferActions(ExplorationSolver.getExePeriod());
+        actionFormulator.calibrateCommand();
+        _robot.bufferAction(RobotAction.RotateLeft);
+        _robot.executeBufferActions(ExplorationSolver.getExePeriod());
+        actionFormulator.calibrateCommand();
+        _robot.bufferAction(RobotAction.RotateLeft);
+        _robot.executeBufferActions(ExplorationSolver.getExePeriod());
+        _robot.bufferAction(RobotAction.RotateLeft);
+        _robot.executeBufferActions(ExplorationSolver.getExePeriod());
         callback.run();
     }
 }

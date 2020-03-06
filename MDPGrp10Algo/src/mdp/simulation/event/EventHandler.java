@@ -29,6 +29,7 @@ import mdp.robot.RobotAction;
 import mdp.simulation.view.GridSquare;
 import mdp.simulation.view.HexFrame;
 import mdp.simulation.IGUIControllable;
+import mdp.solver.exploration.CalibrationType;
 import mdp.solver.exploration.ExplorationSolver;
 import mdp.solver.exploration.Terminator;
 import mdp.solver.shortestpath.AStarSolver;
@@ -849,7 +850,16 @@ public class EventHandler implements IHandleable {
             if (!Main.isSimulating()) {
                 // messaging arduino
                 System.out.println("Sending sensing request to rpi (-> arduino) ");
-                Main.getRpi().sendMoveCommand(actions, Translator.MODE_1);
+                LinkedList<RobotAction> act = new LinkedList<RobotAction>();
+                Robot robo = new Robot();
+                for(RobotAction action: actions) {
+                	
+                	robo.bufferAction(action);
+                	robo.executeBufferActions(ExplorationSolver.getExePeriod());
+                	act.clear();
+                	
+                }
+                //Main.getRpi().sendMoveCommand(actions, Translator.MODE_0);
             }
             _shortestPathThread = new Timer();
             _shortestPathThread.schedule(new TimerTask() {
@@ -860,6 +870,7 @@ public class EventHandler implements IHandleable {
                         _gui.update(_gui.getMap(), _gui.getRobot());
                     } else {
                         System.out.println("Shortest path completed.");
+                        Main.getRpi().sendCalibrationCommand(CalibrationType.Front);
                         _gui.trigger(GUIClickEvent.OnStopTimer);
                         this.cancel();
                     }

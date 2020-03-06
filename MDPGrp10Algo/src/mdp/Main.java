@@ -82,7 +82,7 @@ public class Main {
                     break;
                 case "s":
                     System.out.println("Triggering ShortestPath");
-                    _gui.trigger(GUIClickEvent.OnShortestPath);
+                    _gui.trigger(GUIClickEvent.OnShortestPathWP);
                     break;
                 //new case for startpos to waypoint    
                 case "x":

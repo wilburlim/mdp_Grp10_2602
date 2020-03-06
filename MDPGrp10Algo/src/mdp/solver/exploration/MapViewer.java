@@ -415,7 +415,7 @@ public class MapViewer  {
         Vector2 obstaclePosition;
         Vector2 edge, edge_l, edge_r, edge_b, edge_lm;
         int i = 1;
-        int leftRange= 5;
+        int leftRange= 4;
         Vector2 robotPosition = robot.position();
         markExploredEmpty(robotPosition);
         markExploredDirectEmpty(robotPosition.i(), robotPosition.j() + 1);
@@ -461,7 +461,7 @@ public class MapViewer  {
             }
             markExploredObstacle(edge_l.fnAdd(robot.orientation().toVector2().fnMultiply(i)));
         } else {
-            for (i = 1; i <= 2; i++) {
+            for (i = 1; i < 2; i++) {
                 markExploredEmpty(edge_l.fnAdd(robot.orientation().toVector2().fnMultiply(i)));
             }
         }
@@ -477,7 +477,7 @@ public class MapViewer  {
             }
 
         } else {
-            for (i = 1; i <= 2; i++) {
+            for (i = 1; i < 2; i++) {
                 markExploredEmpty(edge_r.fnAdd(robot.orientation().toVector2().fnMultiply(i)));
             }
         }
@@ -493,7 +493,7 @@ public class MapViewer  {
             }
 
         } else {
-            for (i = 1; i <= leftRange; i++) {
+            for (i = 1; i < leftRange; i++) {
                 markExploredEmpty(edge_l.fnAdd(robot.orientation().getLeft().toVector2().fnMultiply(i)));
             }
         }
@@ -510,7 +510,7 @@ public class MapViewer  {
             }
 
         } else {
-            for (i = 1; i <= 3; i++) {
+            for (i = 1; i <= 2; i++) {
                 markExploredEmpty(edge_r.fnAdd(robot.orientation().getRight().toVector2().fnMultiply(i)));
             }
         }
@@ -528,7 +528,7 @@ public class MapViewer  {
             }
 
         } else {
-            for (i = 1; i <= 3; i++) {
+            for (i = 1; i <= 2; i++) {
                 markExploredEmpty(edge_lm.fnAdd(robot.orientation().getLeft().toVector2().fnMultiply(i)));
             }
         }
