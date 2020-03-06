@@ -29,6 +29,7 @@ import mdp.robot.RobotAction;
 import mdp.simulation.view.GridSquare;
 import mdp.simulation.view.HexFrame;
 import mdp.simulation.IGUIControllable;
+import mdp.solver.exploration.CalibrationType;
 import mdp.solver.exploration.ExplorationSolver;
 import mdp.solver.exploration.Terminator;
 import mdp.solver.shortestpath.AStarSolver;
@@ -850,9 +851,7 @@ public class EventHandler implements IHandleable {
                 // messaging arduino
             	Main.getRpi().disableDelay();
                 System.out.println("Sending sensing request to rpi (-> arduino) ");
-<<<<<<< Updated upstream
-                Main.getRpi().sendMoveCommand(actions, Translator.MODE_1);
-=======
+                
                 String _MOVE_FORWARD = "f";
                 String _MOVE_BACKWARD = "b";
                 String _ROTATE_LEFT = "l";
@@ -922,12 +921,9 @@ public class EventHandler implements IHandleable {
                         _gui.update(_gui.getMap(), _gui.getRobot());
                     } else {
                         System.out.println("Shortest path completed.");
-<<<<<<< Updated upstream
-=======
                         if(!Main.isSimulating()) {
                         	Main.getRpi().sendCalibrationCommand(CalibrationType.Front);
                         }
->>>>>>> Stashed changes
                         _gui.trigger(GUIClickEvent.OnStopTimer);
                         this.cancel();
                     }

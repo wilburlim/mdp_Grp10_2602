@@ -69,6 +69,7 @@ public class Translator implements ITranslatable {
         }
     }
     
+
     public void sendShortestPathMoveCommand(String actions, String mode) {
         try {
             String message = _TO_ARDUINO_MARKER + actions;
@@ -80,7 +81,6 @@ public class Translator implements ITranslatable {
     }
     
     public void disableDelay() {
-    	
         try {
         	String message = _TO_ARDUINO_MARKER + "d";
         	System.out.println("message = " + message);

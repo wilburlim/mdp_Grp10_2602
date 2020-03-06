@@ -29,8 +29,10 @@ public interface ITranslatable {
 
 	SocketCommunicator getSocketCommunicator();
 
+
 	void disableDelay();
 
 	void sendShortestPathMoveCommand(String actions, String mode0);
+
     
 }

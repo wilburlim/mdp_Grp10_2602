@@ -71,7 +71,8 @@ public class Test {
         System.out.println(map.toString(robot));
         
         
-        List<Vector2> path = solver.solve(map, robot, waypoint,SolveType.Smooth).shortestPath;
+        Vector2 waypoint = new Vector2(11,11);
+		List<Vector2> path = solver.solve(map, robot, waypoint ,SolveType.Smooth).shortestPath;
         System.out.println("Path");
         path.forEach((pos) -> {
             System.out.println(pos);
