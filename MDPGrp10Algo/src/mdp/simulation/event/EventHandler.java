@@ -848,8 +848,70 @@ public class EventHandler implements IHandleable {
             System.out.println("Main.isSimulating() = " + Main.isSimulating());
             if (!Main.isSimulating()) {
                 // messaging arduino
+            	Main.getRpi().disableDelay();
                 System.out.println("Sending sensing request to rpi (-> arduino) ");
+<<<<<<< Updated upstream
                 Main.getRpi().sendMoveCommand(actions, Translator.MODE_1);
+=======
+                String _MOVE_FORWARD = "f";
+                String _MOVE_BACKWARD = "b";
+                String _ROTATE_LEFT = "l";
+                String _ROTATE_RIGHT = "r";
+                String _TRAILER = "|";
+                String result = "";
+                
+                int count = 0;
+                String lastAction = "";
+                for (RobotAction action : actions) {
+                    String nextActionStr;
+                    switch (action) {
+                        case MoveForward:
+                            nextActionStr = _MOVE_FORWARD;
+                            break;
+                        case MoveBackward:
+                            nextActionStr = _MOVE_BACKWARD;
+                            break;
+                        case RotateLeft:
+                            nextActionStr = _ROTATE_LEFT;
+                            break;
+                        case RotateRight:
+                            nextActionStr = _ROTATE_RIGHT;
+                            break;
+                        default:
+                            nextActionStr = " ";
+                            break;
+                    }
+                    if (result.length() != 0) {
+                        if (lastAction.equals(nextActionStr)) {
+                            boolean isRotating = lastAction.equals(_ROTATE_LEFT) || lastAction.equals(_ROTATE_RIGHT);
+                            if (isRotating) {
+                                result += _TRAILER + lastAction;
+                            } else {
+                                count++;
+                            }
+                        } else {
+                            boolean isRotating = lastAction.equals(_ROTATE_LEFT) || lastAction.equals(_ROTATE_RIGHT);
+                            result += (isRotating ? "" : count) + _TRAILER + nextActionStr;
+                            count = 0;
+                        }
+                    } else {
+                        result += nextActionStr;
+                    }
+                    lastAction = nextActionStr;
+                }
+                boolean isRotating;
+                if (result.length() != 1) {
+                    isRotating = lastAction.equals(_ROTATE_LEFT) || lastAction.equals(_ROTATE_RIGHT);
+                } else {
+                    isRotating = result.equals(_ROTATE_LEFT) || result.equals(_ROTATE_RIGHT);
+                }
+
+                result += (isRotating ? "" : count) + _TRAILER;
+                System.out.println("Sending out shortest path: " + result);
+
+                Main.getRpi().sendShortestPathMoveCommand(result, Translator.MODE_0);
+                
+                
             }
             _shortestPathThread = new Timer();
             _shortestPathThread.schedule(new TimerTask() {
@@ -860,6 +922,12 @@ public class EventHandler implements IHandleable {
                         _gui.update(_gui.getMap(), _gui.getRobot());
                     } else {
                         System.out.println("Shortest path completed.");
+<<<<<<< Updated upstream
+=======
+                        if(!Main.isSimulating()) {
+                        	Main.getRpi().sendCalibrationCommand(CalibrationType.Front);
+                        }
+>>>>>>> Stashed changes
                         _gui.trigger(GUIClickEvent.OnStopTimer);
                         this.cancel();
                     }

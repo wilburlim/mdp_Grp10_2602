@@ -28,5 +28,9 @@ public interface ITranslatable {
     void sendExplorationEndMarker();
 
 	SocketCommunicator getSocketCommunicator();
+
+	void disableDelay();
+
+	void sendShortestPathMoveCommand(String actions, String mode0);
     
 }

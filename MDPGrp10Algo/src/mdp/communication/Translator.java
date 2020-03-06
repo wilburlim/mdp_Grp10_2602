@@ -68,6 +68,28 @@ public class Translator implements ITranslatable {
             Logger.getLogger(Translator.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public void sendShortestPathMoveCommand(String actions, String mode) {
+        try {
+            String message = _TO_ARDUINO_MARKER + actions;
+            System.out.println("message = " + message);
+            _socketCommunicator.echo(message);
+        } catch (IOException ex) {
+            Logger.getLogger(Translator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void disableDelay() {
+    	
+        try {
+        	String message = _TO_ARDUINO_MARKER + "d";
+        	System.out.println("message = " + message);
+			_socketCommunicator.echo(message);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
 
     @Override
     public void sendSmoothMoveCommand(List<Vector2> smoothPath) {
