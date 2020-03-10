@@ -123,42 +123,6 @@ public class Robot {
             if (!Main.isSimulating()) {
             		executionEndTime = System.currentTimeMillis();
             		System.out.println("Computational time for next movement"+ (executionStartTime- executionEndTime) + "ms");
-            		//executionStartTime = System.currentTimeMillis();
-                    //Map map = mapViewer.getSubjectiveMap();
-                    //int[][] explored = mapViewer.getExplored();
-            		
-            		//LinkedList<RobotAction> rAction = new LinkedList<>();
-            		//LinkedList<RobotAction> executedAction = new LinkedList<>();
-            		
-/*            		for(RobotAction action: bufferedActions) {
-            			if(action==RobotAction.MoveForward) {
-            				Main.getRpi().sendSensingRequest();
-            				boolean obs = this.checkifObstacleAhead();
-            				actionCompleted = false;
-            				if(obs) {
-            					break;
-            				}
-            			}
-            			rAction.add(0, action);
-            			Main.getRpi().sendMoveCommand(rAction, Translator.MODE_0);
-            			//Main.getRpi().sendSensingRequest();
-            		    //executedAction.add(action);
-            			while (!actionCompleted) {
-                        }
-                        executionStartTime = System.currentTimeMillis();
-                        Map map = mapViewer.getSubjectiveMap();
-                        int[][] explored = mapViewer.getExplored();
-                        Main.getRpi().sendInfoToAndroid(map, explored, rAction);
-                        //System.out.println("Actions completed");
-                        actionCompleted = false;
-                        //increment calibrationCounter
-                        calibrationCounter += bufferedActions.size();
-            		    actionCompleted = false;
-            			rAction.clear();
-            		}
-                    
-*/                    
-
             	Main.getRpi().sendMoveCommand(bufferedActions, Translator.MODE_0);
                 
                 while (!actionCompleted) {
@@ -167,10 +131,6 @@ public class Robot {
                 Map map = mapViewer.getSubjectiveMap();
                 int[][] explored = mapViewer.getExplored();
                 
-/*                if(!Main.isSimulating()) {
-                	bufferedActions=executedAction;
-                	executedAction.clear();
-                } */
                 // send info to android
                 Main.getRpi().sendInfoToAndroid(map, explored, bufferedActions);
 
