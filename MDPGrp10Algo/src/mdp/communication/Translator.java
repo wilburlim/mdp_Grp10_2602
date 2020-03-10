@@ -201,4 +201,25 @@ public class Translator implements ITranslatable {
     public SocketCommunicator getSocketCommunicator() {
     	return _socketCommunicator;
     }
+
+	@Override
+	public void disableDelay() {
+		try {
+            String message = _TO_ARDUINO_MARKER + "d";
+            _socketCommunicator.echo(message);
+        } catch (IOException ex) {
+            Logger.getLogger(Translator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+	}
+
+	@Override
+	public void sendShortestPathMoveCommand(String result, String mode0) {
+		// TODO Auto-generated method stub
+		try {
+            String message = _TO_ARDUINO_MARKER + result;
+            _socketCommunicator.echo(message);
+        } catch (IOException ex) {
+            Logger.getLogger(Translator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+	}
 }

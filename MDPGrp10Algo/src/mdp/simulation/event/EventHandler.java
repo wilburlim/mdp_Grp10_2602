@@ -889,7 +889,21 @@ public class EventHandler implements IHandleable {
                             }
                         } else {
                             boolean isRotating = lastAction.equals(_ROTATE_LEFT) || lastAction.equals(_ROTATE_RIGHT);
-                            result += (isRotating ? "" : count) + _TRAILER + nextActionStr;
+                            if(isRotating) {
+                            	result += "" + _TRAILER + nextActionStr;
+                            }
+                            else {
+                            	if(count>=10) {
+                            		int count2 = 0;
+                            		count2 = count-9;
+                            		result += 9 + _TRAILER + count2 + _TRAILER + nextActionStr;
+                            	}
+                            	else {
+                            		result += count + _TRAILER + nextActionStr;
+                            	}
+                            	
+                            }
+                            //result += (isRotating ? "" : count) + _TRAILER + nextActionStr;
                             count = 0;
                         }
                     } else {
@@ -903,8 +917,22 @@ public class EventHandler implements IHandleable {
                 } else {
                     isRotating = result.equals(_ROTATE_LEFT) || result.equals(_ROTATE_RIGHT);
                 }
-
-                result += (isRotating ? "" : count) + _TRAILER;
+                if(isRotating) {
+                	result += "" + _TRAILER;
+                }
+                else {
+                	if(count>=10) {
+                		int count2 = 0;
+                		count2 = count-9;
+                		result += 9 + _TRAILER + count2 + _TRAILER;
+                	}
+                	else {
+                		result += count + _TRAILER;
+                	}
+                	
+                }
+                //result += (isRotating ? "" : count) + _TRAILER + nextActionStr;
+                //result += (isRotating ? "" : count) + _TRAILER;
                 System.out.println("Sending out shortest path: " + result);
 
                 Main.getRpi().sendShortestPathMoveCommand(result, Translator.MODE_0);
