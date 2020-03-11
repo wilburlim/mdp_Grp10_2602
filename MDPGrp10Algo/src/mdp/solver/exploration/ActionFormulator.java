@@ -259,7 +259,7 @@ public class ActionFormulator {
                 break;
             }
         }
-        System.out.println("right wall view at end of function");
+        //System.out.println("right wall view at end of function");
         view(robot);
     }
 
@@ -280,9 +280,9 @@ public class ActionFormulator {
             //System.out.println(robot.getBufferedActions().size());
             robot.executeBufferActions(ExplorationSolver.getExePeriod());
         }
-        else {
-        	System.out.println("no buffered actions");
-        }
+//        else {
+//        	System.out.println("no buffered actions");
+//        }
 
         SensingData s = new SensingData(); // otherwise s may not have been
                                            // initialized
@@ -698,7 +698,9 @@ public class ActionFormulator {
             else if(!alreadyCalibrated){
             	System.out.println("Calibrating with front!");
                 Main.getRpi().sendCalibrationCommand(CalibrationType.Front);
-                if(robotSimulator.position().toString().equalsIgnoreCase("(13, 18)")||robotSimulator.position().toString().equalsIgnoreCase("(1, 18)")||robotSimulator.position().toString().equalsIgnoreCase("(13, 1)")) {
+                if(robotSimulator.position().toString().equalsIgnoreCase("(13, 18)")
+                    ||robotSimulator.position().toString().equalsIgnoreCase("(1, 18)")
+                    ||robotSimulator.position().toString().equalsIgnoreCase("(13, 1)")) {
                 	if(mapViewer.checkRightWall(robotSimulator)) {
                   	   System.out.println("right wall calibrate");
                   	  try {
@@ -721,6 +723,17 @@ public class ActionFormulator {
       					e.printStackTrace();
       				   }	
                     }
+                }
+                else if(mapViewer.checkRightWall(robotSimulator)) {
+                	  System.out.println("right wall calibrate");
+                  	  try {
+     					_robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateRight);
+     					Main.getRpi().sendCalibrationCommand(CalibrationType.Right);
+     	                _robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateLeft);
+     				  } catch (IOException e) {
+     					// TODO Auto-generated catch block
+     					e.printStackTrace();
+     				  }	
                 }
                 alreadyCalibrated=true;
             }

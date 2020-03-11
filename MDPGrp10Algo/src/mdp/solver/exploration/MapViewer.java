@@ -467,12 +467,12 @@ public class MapViewer  {
             //System.out.println(previousfl);
         } 
         else {
-        	if(previousfl!=2) {
+        	//if(previousfl!=2) {
         		for (i = 1; i <= 2; i++) {
                     markExploredEmpty(edge_l.fnAdd(robot.orientation().toVector2().fnMultiply(i)));
                     //System.out.println(edge_l.fnAdd(robot.orientation().toVector2().fnMultiply(i)).toString());
                 }
-        	}
+        	//}
         	previousfl = s.front_l;
         	//System.out.println(previousfl);
         }
@@ -491,7 +491,7 @@ public class MapViewer  {
 
         } else {
         	if(previousfr!=2) {
-        		for (i = 1; i < 2; i++) {
+        		for (i = 1; i <= 2; i++) {
                     markExploredEmpty(edge_r.fnAdd(robot.orientation().toVector2().fnMultiply(i)));
                 }
         	}
