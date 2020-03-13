@@ -661,7 +661,9 @@ public class ActionFormulator {
         //System.out.println("predictAndSendCalibrationReminder");
 
         if (mapViewer.checkRightFrontBack(robotSimulator)){
-            if (Main.isSimulating()&& !alreadyCalibrated) {
+            if (Main.isSimulating()&& (!alreadyCalibrated||robotSimulator.position().toString().equalsIgnoreCase("(13, 18)")
+                    ||robotSimulator.position().toString().equalsIgnoreCase("(1, 18)")
+                    ||robotSimulator.position().toString().equalsIgnoreCase("(13, 1)"))) {
                    System.out.println("Send calibration command " + CalibrationType.Right.toString());
                    try {
                     _robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateRight);
@@ -698,7 +700,9 @@ public class ActionFormulator {
         }
         
         if (mapViewer.checkFrontObstacles(robotSimulator)){
-            if (Main.isSimulating()&& !alreadyCalibrated) {
+            if (Main.isSimulating()&& (!alreadyCalibrated||robotSimulator.position().toString().equalsIgnoreCase("(13, 18)")
+                    ||robotSimulator.position().toString().equalsIgnoreCase("(1, 18)")
+                    ||robotSimulator.position().toString().equalsIgnoreCase("(13, 1)"))) {
                    System.out.println("Send calibration command " + CalibrationType.Front.toString());
                    if(robotSimulator.position().toString().equalsIgnoreCase("(13, 18)")||robotSimulator.position().toString().equalsIgnoreCase("(1, 18)")||robotSimulator.position().toString().equalsIgnoreCase("(13, 1)")){
                 	   if(mapViewer.checkRightWall(robotSimulator)) {

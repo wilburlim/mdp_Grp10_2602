@@ -130,7 +130,7 @@ public class MapViewer  {
 
     public boolean checkConfidence(Vector2 v) {
         if (map.checkValidBoundary(v)) {
-            if (confidentDetectionArea[v.i()][v.j()] == 1)
+            if (confidentDetectionArea[v.i()][v.j()] >= 2)
                 return true;
             else
                 return false;
@@ -179,13 +179,13 @@ public class MapViewer  {
 
     public boolean markConfidentDetection(Vector2 v) {
         if (checkValidExploredRange(v))
-            confidentDetectionArea[v.i()][v.j()] = 1;
+            confidentDetectionArea[v.i()][v.j()] += 1;
         return true;
     }
 
     public boolean markConfidentDetectionDirect(int i, int j) {
         if (checkValidExploredRange(new Vector2(i, j)))
-            confidentDetectionArea[i][j] = 1;
+            confidentDetectionArea[i][j] += 2;
         return true;
     }
 
