@@ -124,6 +124,7 @@ public class ExplorationSolver {
                 goalZoneReached = true;
             }
             actionFormulator.rightWallFollower(_robot);
+            //actionFormulator.leftWallFollower(_robot);
             //System.out.println("completed right wall");
             //System.out.println(_robot.getBufferedActions().size());
             //actionFormulator.actionSimplifier(_robot);
