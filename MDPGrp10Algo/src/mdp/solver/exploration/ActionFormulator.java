@@ -821,9 +821,7 @@ public class ActionFormulator {
                    alreadyCalibrated=true;
                    robotactions=0;
             }
-            else if(!alreadyCalibrated||robotSimulator.position().toString().equalsIgnoreCase("(13, 18)")
-                    ||robotSimulator.position().toString().equalsIgnoreCase("(1, 18)")
-                    ||robotSimulator.position().toString().equalsIgnoreCase("(13, 1)")){
+            else if(!alreadyCalibrated||mapViewer.checkRightWall(robotSimulator)||mapViewer.checkLeftWall(robotSimulator)){
             	System.out.println("Calibrating with front!");
                 Main.getRpi().sendCalibrationCommand(CalibrationType.Front);
                 if(robotSimulator.position().toString().equalsIgnoreCase("(13, 18)")
@@ -863,7 +861,18 @@ public class ActionFormulator {
      					e.printStackTrace();
      				  }	
                 }
-                else if(leftWall) {
+                else if(mapViewer.checkLeftWall(robotSimulator)) {
+              	  System.out.println("left wall calibrate");
+                	  try {
+   					_robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateLeft);
+   					Main.getRpi().sendCalibrationCommand(CalibrationType.Right);
+   	                _robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateRight);
+   				  } catch (IOException e) {
+   					
+   					e.printStackTrace();
+   				  }	
+              }
+              /*  else if(leftWall) {
                 	if(mapViewer.checkLeftWall(robotSimulator)) {
                   	  System.out.println("left wall calibrate");
                     	  try {
@@ -875,7 +884,7 @@ public class ActionFormulator {
        					e.printStackTrace();
        				  }	
                   }
-                }
+                } */
                 alreadyCalibrated=true;
                 robotactions=0;
             }
@@ -923,7 +932,7 @@ public class ActionFormulator {
         }
         
         if(exploreRemainingArea||robotactions>=7) {
-        	if(robotactions>=3) {
+        	if(robotactions>=4) {
         		System.out.println("checking for remaining");
                 if (Main.isSimulating()&& !alreadyCalibrated) {
                     
