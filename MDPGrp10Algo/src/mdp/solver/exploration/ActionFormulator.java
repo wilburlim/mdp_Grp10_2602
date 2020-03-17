@@ -821,7 +821,7 @@ public class ActionFormulator {
                    alreadyCalibrated=true;
                    robotactions=0;
             }
-            else if(!alreadyCalibrated||mapViewer.checkRightWall(robotSimulator)||mapViewer.checkLeftWall(robotSimulator)){
+            else if((!alreadyCalibrated||mapViewer.checkRightWall(robotSimulator)||mapViewer.checkLeftWall(robotSimulator))&&!Main.isSimulating()){
             	System.out.println("Calibrating with front!");
                 Main.getRpi().sendCalibrationCommand(CalibrationType.Front);
                 if(robotSimulator.position().toString().equalsIgnoreCase("(13, 18)")
