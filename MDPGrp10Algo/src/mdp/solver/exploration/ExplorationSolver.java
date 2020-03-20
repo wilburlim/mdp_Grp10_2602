@@ -123,10 +123,9 @@ public class ExplorationSolver {
             if (_robot.position().equals(new Vector2(map.DIM_I - 2, map.DIM_J - 2))) {
                 goalZoneReached = true;
             }
-            actionFormulator.rightWallFollower(_robot);
-            
-            
-            actionFormulator.actionSimplifier(_robot);
+            //actionFormulator.rightWallFollower(_robot);
+            actionFormulator.leftWallFollower(_robot);
+            //actionFormulator.actionSimplifier(_robot);
         }
 
         _hasFinishedFirstRound = true;

@@ -12,6 +12,7 @@ import mdp.simulation.GUI;
 import mdp.simulation.event.GUIClickEvent;
 import mdp.simulation.IGUIUpdatable;
 import mdp.solver.exploration.ActionFormulator;
+import mdp.solver.exploration.CalibrationType;
 
 public class Main {
 
@@ -75,6 +76,10 @@ public class Main {
                 case "e":
                     System.out.println("Triggering Exploration");
                     _gui.trigger(GUIClickEvent.OnExploration);
+                    break;
+                case "z":
+                    System.out.println("Triggering Calibration");
+                    Main.getRpi().sendCalibrationCommand(CalibrationType.Front);
                     break;
                 case "g":
                     System.out.println("Triggering Stop Button");

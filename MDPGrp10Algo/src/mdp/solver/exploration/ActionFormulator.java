@@ -27,7 +27,9 @@ public class ActionFormulator {
     private static volatile boolean isSensingDataArrived = false;
     private static volatile String sensingDataFromRPI;
     private static volatile boolean alreadyCalibrated = false;
-
+    private static volatile boolean exploreRemainingArea = false;
+    private static volatile int robotactions = 0;
+    private static volatile boolean leftWall = false;
     public ActionFormulator(MapViewer mapV, Simulator s) {
         mapViewer = mapV;
         simulator = s;
@@ -63,10 +65,13 @@ public class ActionFormulator {
     }
 
     public void exploreRemainingArea(Robot _robot) throws InterruptedException, IOException {
+    	exploreRemainingArea=true;
         boolean reachablePointFound = false;
         LinkedList<Vector2> reachableList;
         AStarSolver astarSolver = new AStarSolver();
         LinkedList<RobotAction> robotActions;
+        
+        
 
         while (!mapViewer.checkIfNavigationComplete()) {
             boolean ventureIntoDangerousZone = false;
@@ -124,11 +129,13 @@ public class ActionFormulator {
                 // System.out.println("Action size: " + robotActions.size());
                 int i = 0;
                 for (i = 0; i < robotActions.size(); i++) {
+                	
                     Robot robotSimulator = new Robot(new Vector2(_robot.position().i(), _robot.position().j()),
                             _robot.orientation());
-                    if (i >= 1)
+                    if (i >= 1) {
+                    	System.out.println("explore remining robot sim execute");
                         robotSimulator.execute(robotActions.get(i - 1));
-
+                    }
                     if (ventureIntoDangerousZone == false && !explorationUtil.checkIfInDangerousZone(robotSimulator, mapViewer)) {
                         robotSimulator.execute(robotActions.get(i));
 
@@ -150,7 +157,15 @@ public class ActionFormulator {
                     // command
                     System.out.println(_robot.position().toString());
                     System.out.println(_robot.orientation().toString());
+                    System.out.println("middel explore remain view");
+                  /*  if(robotactions>=3) {
+                    	this.predictAndSendCalibrationReminder(_robot, _robot.getBufferedActions().get(0));
+                    	if(this.alreadyCalibrated==true) {
+                    		robotactions=0;
+                    	}
+                    }*/
                     view(_robot);
+                    robotactions++;
                     if (mapViewer.checkIfNavigationComplete())
                         break;
 
@@ -168,6 +183,7 @@ public class ActionFormulator {
                         // System.out.println("Here2");
                         // in circumvent, stop circumventing when the obstacle
                         // is fully identified
+                    	
                         view(_robot); // take a look , update map
                         break;
                     }
@@ -190,7 +206,7 @@ public class ActionFormulator {
                  */
 
                 /////
-
+                System.out.println("end of explore rem view robot");
                 view(_robot);
 
             }
@@ -199,14 +215,77 @@ public class ActionFormulator {
             reachablePointFound = false;
         }
         System.out.println("All remaining blocks explored or checked as unreachable ");
-
+        exploreRemainingArea = false;
         System.out.println("Exploration completed");
+        
+    }
+    
+    public void leftWallFollower(Robot robot) throws InterruptedException, IOException {
+    	leftWall = true;
+    	//System.out.println("Left Wall Follower executing!");
+        // can I view less ?
+    	//System.out.println(robot.checkIfHavingBufferActions());
+    	//System.out.println(robot.getBufferedActions().size());
+    	//System.out.println("going to left wall view");
+        view(robot); // for scanning purpose
 
+        /*
+         * while(mapViewer.checkIfRight5SquaresEmpty(robot)){
+         * robot.bufferAction(RobotAction.MoveBackward); view(robot); }
+         */
+        if (null != explorationUtil.checkWalkable(robot, Direction.Left, mapViewer)) {
+        	//System.out.println("going into right wall if");
+            switch (explorationUtil.checkWalkable(robot, Direction.Left, mapViewer)) {
+            case Yes:
+            	//System.out.println("rightWall yes" + robot.position().toString());
+                robot.bufferAction(RobotAction.RotateLeft);
+                view(robot);
+                robot.bufferAction(RobotAction.MoveForward);
+                break;
+            case No:
+            	//System.out.println("rightWall no");
+                turnRightTillEmpty(robot); // now didnt turn left , so execute
+                                          // directly
+                //view(robot);
+                break;
+            case Unsure: {
+            	//System.out.println("rightWall unsure"+robot.position().toString());
+                robot.bufferAction(RobotAction.RotateLeft);
+                view(robot);
+                if (null == explorationUtil.checkWalkable(robot, Direction.Up, mapViewer)) {
+                    System.out.println("Error1");
+                } else {
+                    switch (explorationUtil.checkWalkable(robot, Direction.Up, mapViewer)) {
+                    case Yes:
+                    	//System.out.println("rightWall unsure: yes");
+                        robot.bufferAction(RobotAction.MoveForward);
+                        break;
+                    case No:
+                    	//System.out.println("rightWall unsure: no");
+                        robot.bufferAction(RobotAction.RotateRight);
+                        turnLeftTillEmpty(robot);
+                        break;
+                    default:
+                        System.out.println("Error1");
+                        break;
+                    }
+                }
+                break;
+            }
+            default:
+                break;
+            }
+        }
+        //System.out.println("left wall view at end of function");
+        view(robot);
     }
 
     public void rightWallFollower(Robot robot) throws InterruptedException, IOException {
-    	System.out.println("Right Wall Follower executing!");
+    	//System.out.println("Right Wall Follower executing!");
         // can I view less ?
+    	//System.out.println(robot.checkIfHavingBufferActions());
+    	//System.out.println(robot.getBufferedActions().size());
+    	//System.out.println("going to right wall view");
         view(robot); // for scanning purpose
 
         /*
@@ -214,21 +293,22 @@ public class ActionFormulator {
          * robot.bufferAction(RobotAction.MoveBackward); view(robot); }
          */
         if (null != explorationUtil.checkWalkable(robot, Direction.Right, mapViewer)) {
-
+        	//System.out.println("going into right wall if");
             switch (explorationUtil.checkWalkable(robot, Direction.Right, mapViewer)) {
             case Yes:
-            	System.out.println("rightWall yes");
+            	//System.out.println("rightWall yes" + robot.position().toString());
                 robot.bufferAction(RobotAction.RotateRight);
                 view(robot);
                 robot.bufferAction(RobotAction.MoveForward);
                 break;
             case No:
-            	System.out.println("rightWall no");
+            	//System.out.println("rightWall no");
                 turnLeftTillEmpty(robot); // now didnt turn left , so execute
                                           // directly
+                //view(robot);
                 break;
             case Unsure: {
-            	System.out.println("rightWall unsure");
+            	//System.out.println("rightWall unsure"+robot.position().toString());
                 robot.bufferAction(RobotAction.RotateRight);
                 view(robot);
                 if (null == explorationUtil.checkWalkable(robot, Direction.Up, mapViewer)) {
@@ -236,11 +316,11 @@ public class ActionFormulator {
                 } else {
                     switch (explorationUtil.checkWalkable(robot, Direction.Up, mapViewer)) {
                     case Yes:
-                    	System.out.println("rightWall unsure: yes");
+                    	//System.out.println("rightWall unsure: yes");
                         robot.bufferAction(RobotAction.MoveForward);
                         break;
                     case No:
-                    	System.out.println("rightWall unsure: no");
+                    	//System.out.println("rightWall unsure: no");
                         robot.bufferAction(RobotAction.RotateLeft);
                         turnLeftTillEmpty(robot);
                         break;
@@ -255,18 +335,8 @@ public class ActionFormulator {
                 break;
             }
         }
+        //System.out.println("right wall view at end of function");
         view(robot);
-
-        // if all around empty, avoid turning in a loop, find the wall directly
-        /*
-         * if (mapViewer.checkAllAroundEmpty(robot) == Know.Yes) {
-         * System.out.println("All around empty");
-         * robot.bufferAction(RobotAction.RotateRight);
-         * 
-         * while(mapViewer.checkWalkable(robot, Direction.Up) == Know.Yes){
-         * robot.bufferAction(RobotAction.MoveForward); }
-         * robot.bufferAction(RobotAction.RotateLeft); view(robot); }
-         */
     }
 
     public static void sensingDataCallback(String input) {
@@ -277,18 +347,25 @@ public class ActionFormulator {
     // look through map and update
     public Map view(Robot robot) throws InterruptedException, IOException {
         int calibirationType;
-        System.out.println("view function!");
+        //System.out.println("view function!");
         /// check current map configuration , give calibration command
 
         if (robot.checkIfHavingBufferActions()) {
             predictAndSendCalibrationReminder(robot, robot.getBufferedActions().get(0));
+            //System.out.println(robot.getBufferedActions().get(0).toString());
+            //System.out.println(robot.getBufferedActions().size());
             robot.executeBufferActions(ExplorationSolver.getExePeriod());
+            robotactions++;
         }
+//        else {
+//        	System.out.println("no buffered actions");
+//        }
 
         SensingData s = new SensingData(); // otherwise s may not have been
                                            // initialized
         if (Main.isSimulating()) {
             s = simulator.getSensingData(robot);
+            //System.out.println(Integer.toString(s.front_l) + Integer.toString(s.front_m) + Integer.toString(s.front_r) + Integer.toString(s.right_f) + Integer.toString(s.left_m) + Integer.toString(s.left));
         } else {
 
             // RPI call here
@@ -350,7 +427,7 @@ public class ActionFormulator {
     }
 
     public void turnLeftTillEmpty(Robot robot) throws InterruptedException, IOException {
-    	System.out.println("turnLeftTillEmpty");
+    	//System.out.println("turnLeftTillEmpty");
         Know check = explorationUtil.checkWalkable(robot, Direction.Up, mapViewer);
 
         /* if (check == Know.Unsure) { */
@@ -373,9 +450,34 @@ public class ActionFormulator {
         }
 
     }
+    
+    public void turnRightTillEmpty(Robot robot) throws InterruptedException, IOException {
+    	//System.out.println("turnRightTillEmpty");
+        Know check = explorationUtil.checkWalkable(robot, Direction.Up, mapViewer);
+
+        /* if (check == Know.Unsure) { */
+        view(robot);
+        /* } */
+        // make sure it is viewed before turn
+        // update
+        check = explorationUtil.checkWalkable(robot, Direction.Up, mapViewer);
+
+        if (check == Know.Yes) {
+            robot.bufferAction(RobotAction.MoveForward);
+            return;
+        }
+
+        if (check == Know.No) {
+            robot.bufferAction(RobotAction.RotateRight);
+            view(robot);
+            turnRightTillEmpty(robot);
+
+        }
+
+    }
 
     public void actionSimplifier(Robot _robot) throws InterruptedException, IOException {
-        // TODO Auto-generated method stub
+    
 
         if (!_robot.checkIfRobotVisitedBefore()) {
             boolean rightBlocked = (explorationUtil.checkWalkable(_robot, Direction.Right, mapViewer) == Know.No);
@@ -645,57 +747,23 @@ public class ActionFormulator {
         //robotSimulator.execute(action);
 
         //System.out.println("predictAndSendCalibrationReminder");
-        
-        if (mapViewer.checkLeftObstacles(robotSimulator)){
 
-            if (Main.isSimulating()&& !alreadyCalibrated) {
-                System.out.println("Send calibration command " + CalibrationType.Left.toString());
-            	
-            	try {
-            		_robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateLeft);
-            		System.out.println("Calibrating!");
-					_robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateRight);
-	            	//_robot.executeBufferActions(ExplorationSolver.getExePeriod());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-            	
-            	alreadyCalibrated=true;
-            }
-            else if(!alreadyCalibrated) {
-            	
-            	try {
-					_robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateLeft);
-					Main.getRpi().sendCalibrationCommand(CalibrationType.Left);
-	            	System.out.println("Send calibration command " + CalibrationType.Left.toString());
-	            	_robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateRight);
-	            	if(mapViewer.checkFrontObstacles(robotSimulator)) {
-	            		System.out.println("Calibrating with front!");
-	                    Main.getRpi().sendCalibrationCommand(CalibrationType.Front);
-	            	}
-	            	alreadyCalibrated=true;
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-            	
-            }
-        }
-        
-        // only front back on the right side
         if (mapViewer.checkRightFrontBack(robotSimulator)){
-            if (Main.isSimulating()&& !alreadyCalibrated) {
+            if (Main.isSimulating()&&!alreadyCalibrated) {
                    System.out.println("Send calibration command " + CalibrationType.Right.toString());
                    try {
                     _robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateRight);
    					System.out.println("Calibrating!");
    					_robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateLeft);
+   					if(mapViewer.checkFrontObstacles(robotSimulator)) {
+    					System.out.println("Calibrate front after right");
+                    }
    				} catch (IOException e) {
-   					// TODO Auto-generated catch block
+   					
    					e.printStackTrace();
    				}
                 alreadyCalibrated=true;
+                robotactions=0;
             }
             else if(!alreadyCalibrated) {
             	try {
@@ -708,47 +776,227 @@ public class ActionFormulator {
 	            	}
 	            	alreadyCalibrated=true;
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 				}
                 
             }
         }
+        
         if (mapViewer.checkFrontObstacles(robotSimulator)){
-            if (Main.isSimulating()&& !alreadyCalibrated) {
+            if (Main.isSimulating()&& (!alreadyCalibrated||robotSimulator.position().toString().equalsIgnoreCase("(13, 18)")
+                    ||robotSimulator.position().toString().equalsIgnoreCase("(1, 18)")
+                    ||robotSimulator.position().toString().equalsIgnoreCase("(13, 1)"))) {
                    System.out.println("Send calibration command " + CalibrationType.Front.toString());
+                   if(robotSimulator.position().toString().equalsIgnoreCase("(13, 18)")||robotSimulator.position().toString().equalsIgnoreCase("(1, 18)")||robotSimulator.position().toString().equalsIgnoreCase("(13, 1)")){
+                	   if(mapViewer.checkRightWall(robotSimulator)) {
+                    	   System.out.println(robotSimulator.position().toString());
+                    	   System.out.println("right wall calibrate");
+                       }
+                	   else if(mapViewer.checkLeftWall(robotSimulator)) {
+                    	   System.out.println(robotSimulator.position().toString());
+                    	   System.out.println("left wall calibrate");
+                    	   try {
+                               _robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateLeft);
+              					System.out.println("Calibrating!");
+              					_robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateRight);
+              					
+              				} catch (IOException e) {
+              					
+              					e.printStackTrace();
+              				}
+                       }
+                   }
+                   else if(leftWall) {
+                   	if(mapViewer.checkLeftWall(robotSimulator)) {
+                     	  System.out.println("left wall calibrate");
+                       	  try {
+          					_robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateLeft);
+          					
+          	                _robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateRight);
+          				  } catch (IOException e) {
+          					
+          					e.printStackTrace();
+          				  }	
+                     }
+                   }
                    alreadyCalibrated=true;
+                   robotactions=0;
             }
-            else if(!alreadyCalibrated){
+            else if((!alreadyCalibrated||mapViewer.checkRightWall(robotSimulator)||mapViewer.checkLeftWall(robotSimulator))&&!Main.isSimulating()){
             	System.out.println("Calibrating with front!");
                 Main.getRpi().sendCalibrationCommand(CalibrationType.Front);
-                if(mapViewer.checkLeftObstacles(robotSimulator)) {
-                	try {
-    					_robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateLeft);
-    					Main.getRpi().sendCalibrationCommand(CalibrationType.Left);
-    	            	System.out.println("Send calibration command " + CalibrationType.Left.toString());
-    	            	_robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateRight);
-    	            	alreadyCalibrated=true;
-    				} catch (IOException e) {
-    					// TODO Auto-generated catch block
-    					e.printStackTrace();
-    				}
+                if(robotSimulator.position().toString().equalsIgnoreCase("(13, 18)")
+                    ||robotSimulator.position().toString().equalsIgnoreCase("(1, 18)")
+                    ||robotSimulator.position().toString().equalsIgnoreCase("(13, 1)")) {
+                	if(mapViewer.checkRightWall(robotSimulator)) {
+                  	   System.out.println("right wall calibrate");
+                  	  try {
+     					_robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateRight);
+     					Main.getRpi().sendCalibrationCommand(CalibrationType.Right);
+     	                _robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateLeft);
+     				  } catch (IOException e) {
+     					
+     					e.printStackTrace();
+     				  }	
+                     }
+                	else if(mapViewer.checkLeftWall(robotSimulator)) {
+                   	   System.out.println("left wall calibrate");
+                   	   try {
+      					 _robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateLeft);
+      					 Main.getRpi().sendCalibrationCommand(CalibrationType.Left);
+      	                 _robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateRight);
+      				   } catch (IOException e) {
+      					
+      					e.printStackTrace();
+      				   }	
+                    }
                 }
-                if(mapViewer.checkRightFrontBack(robotSimulator)){
-                	try {
-    					_robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateRight);
-    					Main.getRpi().sendCalibrationCommand(CalibrationType.Right);
-    	                _robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateLeft);
-    	            	alreadyCalibrated=true;
-    				} catch (IOException e) {
-    					// TODO Auto-generated catch block
-    					e.printStackTrace();
-    				}
+                else if(mapViewer.checkRightWall(robotSimulator)) {
+                	  System.out.println("right wall calibrate");
+                  	  try {
+     					_robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateRight);
+     					Main.getRpi().sendCalibrationCommand(CalibrationType.Right);
+     	                _robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateLeft);
+     				  } catch (IOException e) {
+     					
+     					e.printStackTrace();
+     				  }	
                 }
+                else if(mapViewer.checkLeftWall(robotSimulator)||mapViewer.checkLeftObstacles(robotSimulator)) {
+              	  System.out.println("left wall calibrate");
+                	  try {
+   					_robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateLeft);
+   					Main.getRpi().sendCalibrationCommand(CalibrationType.Right);
+   	                _robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateRight);
+   				  } catch (IOException e) {
+   					
+   					e.printStackTrace();
+   				  }	
+              }
+              /*  else if(leftWall) {
+                	if(mapViewer.checkLeftWall(robotSimulator)) {
+                  	  System.out.println("left wall calibrate");
+                    	  try {
+       					_robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateLeft);
+       					Main.getRpi().sendCalibrationCommand(CalibrationType.Left);
+       	                _robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateRight);
+       				  } catch (IOException e) {
+       					
+       					e.printStackTrace();
+       				  }	
+                  }
+                } */
                 alreadyCalibrated=true;
+                robotactions=0;
+            }
+        } 
+        
+        
+        if (mapViewer.checkLeftObstacles(robotSimulator)){
+
+            if (Main.isSimulating()&& !alreadyCalibrated) {
+                System.out.println("Send calibration command " + CalibrationType.Left.toString());
+            	
+            	try {
+            		_robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateLeft);
+            		System.out.println("Calibrating!");
+					_robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateRight);
+					if(mapViewer.checkFrontObstacles(robotSimulator)) {
+    					System.out.println("calibrate front after left");
+                    }
+	            	//_robot.executeBufferActions(ExplorationSolver.getExePeriod());
+				} catch (IOException e) {
+					
+					e.printStackTrace();
+				}
+            	
+            	alreadyCalibrated=true;
+            	robotactions=0;
+            }
+            else if(!alreadyCalibrated) {
+            	
+            	try {
+					_robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateLeft);
+					Main.getRpi().sendCalibrationCommand(CalibrationType.Left);
+	            	System.out.println("Send calibration command " + CalibrationType.Left.toString());
+	            	_robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateRight);
+	            	if(mapViewer.checkFrontObstacles(robotSimulator)) {
+    					Main.getRpi().sendCalibrationCommand(CalibrationType.Front);
+                    }
+	            	alreadyCalibrated=true;
+				} catch (IOException e) {
+					
+					e.printStackTrace();
+				}
+            	
             }
         }
         
+        if(exploreRemainingArea||robotactions>=7) {
+        	if(robotactions>=4) {
+        		System.out.println("checking for remaining");
+                if (Main.isSimulating()&& !alreadyCalibrated) {
+                    
+                 	   if(mapViewer.checkRightWall(robotSimulator)) {
+                     	   System.out.println(robotSimulator.position().toString());
+                     	   System.out.println("right wall calibrate");
+                     	  try {
+                              _robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateRight);
+             					System.out.println("Calibrating!");
+             					_robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateLeft);
+             				} catch (IOException e) {
+             					
+             					e.printStackTrace();
+             				}
+                        }
+                 	   else if(mapViewer.checkLeftWall(robotSimulator)) {
+                     	   System.out.println(robotSimulator.position().toString());
+                     	   System.out.println("left wall calibrate");
+                     	  try {
+                      		_robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateLeft);
+                      		System.out.println("Calibrating!");
+          					_robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateRight);
+          	            	//_robot.executeBufferActions(ExplorationSolver.getExePeriod());
+          				} catch (IOException e) {
+          					
+          					e.printStackTrace();
+          				}
+                        }
+                    
+                    alreadyCalibrated=true;
+                    robotactions=0;
+             }
+             else if(!alreadyCalibrated){
+                 	if(mapViewer.checkRightWall(robotSimulator)) {
+                   	   System.out.println("right wall calibrate");
+                   	  try {
+      					_robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateRight);
+      					Main.getRpi().sendCalibrationCommand(CalibrationType.Right);
+      	                _robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateLeft);
+      				  } catch (IOException e) {
+      					
+      					e.printStackTrace();
+      				  }	
+                      }
+                 	else if(mapViewer.checkLeftWall(robotSimulator)) {
+                    	   System.out.println("left wall calibrate");
+                    	   try {
+       					 _robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateLeft);
+       					 Main.getRpi().sendCalibrationCommand(CalibrationType.Left);
+       	                 _robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateRight);
+       				   } catch (IOException e) {
+       					
+       					e.printStackTrace();
+       				   }	
+                     }
+                 
+                 alreadyCalibrated=true;
+             }
+                robotactions = 0;
+        	}
+        }
+                              
         if(!mapViewer.checkLeftObstacles(robotSimulator)&&!mapViewer.checkRightFrontBack(robotSimulator)&&!mapViewer.checkFrontObstacles(robotSimulator))
         	alreadyCalibrated = false;
     }
