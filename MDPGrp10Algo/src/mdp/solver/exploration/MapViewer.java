@@ -475,7 +475,7 @@ public class MapViewer  {
             //System.out.println(previousfl);
         } 
         else {
-        	if(previousfl!=2||previousfl!=1) {
+        	if(previousfl!=2) {
         		for (i = 1; i <= 2; i++) {
                     markExploredEmpty(edge_l.fnAdd(robot.orientation().toVector2().fnMultiply(i)));
                     //System.out.println(edge_l.fnAdd(robot.orientation().toVector2().fnMultiply(i)).toString());
@@ -505,7 +505,7 @@ public class MapViewer  {
             previousfr = s.front_r;
 
         } else {
-        	if(previousfr!=2||previousfr!=1) {
+        	if(previousfr!=2) {
         		for (i = 1; i <= 2; i++) {
                     markExploredEmpty(edge_r.fnAdd(robot.orientation().toVector2().fnMultiply(i)));
                 }

@@ -70,6 +70,8 @@ public class ActionFormulator {
         LinkedList<Vector2> reachableList;
         AStarSolver astarSolver = new AStarSolver();
         LinkedList<RobotAction> robotActions;
+        
+        
 
         while (!mapViewer.checkIfNavigationComplete()) {
             boolean ventureIntoDangerousZone = false;
@@ -861,7 +863,7 @@ public class ActionFormulator {
      					e.printStackTrace();
      				  }	
                 }
-                else if(mapViewer.checkLeftWall(robotSimulator)) {
+                else if(mapViewer.checkLeftWall(robotSimulator)||mapViewer.checkLeftObstacles(robotSimulator)) {
               	  System.out.println("left wall calibrate");
                 	  try {
    					_robot.executeAction(ExplorationSolver.getExePeriod(), RobotAction.RotateLeft);
