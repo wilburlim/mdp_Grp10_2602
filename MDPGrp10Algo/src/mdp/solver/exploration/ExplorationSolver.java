@@ -140,6 +140,9 @@ public class ExplorationSolver {
             actionFormulator.exploreRemainingArea(_robot);
 
         }
+        else if(!mapViewer.checkIfNavigationComplete() && Main.getGUI().isSingleRoundRun()) {
+        	mapViewer.markAllExplored();
+        }
 
         // goBackToStart( map,_robot, ()->{});
 

@@ -281,6 +281,23 @@ public class MapViewer  {
 
         return complete;
     }
+    
+    public void markAllExplored() {
+    	for (int i = 0; i < Map.DIM_I; i++) {
+            for (int j = 0; j < Map.DIM_J; j++) {
+                if (explored[i][j] == 0) {
+                	explored[i][j] = 1;
+                }
+            }
+        }
+    
+    	map = new Map(explored, true);
+        Main.getGUI().update(map);
+        if(!Main.isSimulating()) {
+    		Main.getRpi().sendInfoToAndroid2(map, explored);
+    	}
+    	
+    }
 
     private void insertExploredIntoMap() {
         LinkedList<Vector2> listOfObserved = new LinkedList<>();

@@ -32,5 +32,7 @@ public interface ITranslatable {
 	void disableDelay();
 
 	void sendShortestPathMoveCommand(String result, String mode0);
+
+	void sendInfoToAndroid2(Map map, int[][] explored);
     
 }
