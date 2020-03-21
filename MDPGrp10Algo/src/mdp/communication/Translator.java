@@ -104,37 +104,20 @@ public class Translator implements ITranslatable {
                     +"\""
                     +"}";
             
-            _socketCommunicator.echo(message);
+            _socketCommunicator.echo(message);   
             
+        } catch (IOException ex) {
+            Logger.getLogger(Translator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void sendInfoToAndroid2(Map map, int[][] explored) {
+        try {
+            String message = _TO_ANDROID_MARKER
+                    + Compiler.compileMap(map, explored)
+                    +"}";
             
-            
-//            List<String> arrActions=Compiler.compileAndroidActions(actions);
-            
-//            String action = _TO_ANDROID_MARKER+ "{"
-//            		+ "\"robot\":"
-//                  + "\"" + "rffflfff"
-//                  + Compiler.compileActions(actions,MODE_0)
-//                  +"\""+ "}";
-            
-//            _socketCommunicator.echo(action);
-            
-//            List<String> aActions= new ArrayList<String>();
-//            aActions.add("f");
-//            aActions.add("f");
-//            aActions.add("r");
-//            aActions.add("f");
-//            aActions.add("f");
-//            aActions.add("l");
-            
-//            for(String action:aActions) {
-            	
-//            	this.androidActions(action);
-//            }
-//                    + ",\"robot\":"
-//                    + "\"" + "rffflfff"
-//                    //+ Compiler.compileAndroidActions(actions)
-//                    +"\""+ "}";
-            
+            _socketCommunicator.echo(message);   
             
         } catch (IOException ex) {
             Logger.getLogger(Translator.class.getName()).log(Level.SEVERE, null, ex);
